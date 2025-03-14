@@ -1,7 +1,6 @@
 FROM python:3.11-slim
 
 RUN apt-get update && \
-    apt-get curl && \
     apt-get clean
 
 WORKDIR /opt/axenix
