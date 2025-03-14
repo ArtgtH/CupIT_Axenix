@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get curl && \
     apt-get clean
 
-WORKDIR /opt
+WORKDIR /opt/axenix
 COPY ./requirements.txt ./requirements.txt
 
 RUN pip install -r requirements.txt && rm requirements.txt

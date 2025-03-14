@@ -8,11 +8,6 @@ services:
     build: backend/
     container_name: api
     restart: unless-stopped
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/docs || exit 1" ]
-      interval: 300s
-      timeout: 10s
-      retries: 3
     ports:
       - "8000:8000"
     networks:
