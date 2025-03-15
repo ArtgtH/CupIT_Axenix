@@ -1,14 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-interface Message {
-  text: string;
-  isBot: boolean;
-}
+import { ChatMessage, ApiResponse } from '../types/chat';
 
 const ChatPage: React.FC = () => {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     { text: 'Откуда вы отправляетесь?', isBot: true }
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -36,9 +32,60 @@ const ChatPage: React.FC = () => {
   }, [messages]);
 
   // Мок функции для работы с бэкендом
-  const mockApiCall = async (message: string): Promise<string> => {
+  const mockApiCall = async (message: string): Promise<ApiResponse> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Пример ответа с расписанием
+    if (message.toLowerCase().includes('санкт-петербург') && message.toLowerCase().includes('москва')) {
+      return {
+        type: 'schedule',
+        objects: [
+          {
+            type: 'train',
+            time_start_utc: Math.floor(Date.now() / 1000) + 86400, // завтра
+            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200, // +2 часа
+            place_start: 'Санкт-Петербург',
+            place_finish: 'Тверь',
+            ticket_url: 'https://example.com/ticket1'
+          },
+          {
+            type: 'bus',
+            time_start_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 1800, // +30 минут после поезда
+            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 1800 + 3600, // +1 час
+            place_start: 'Тверь',
+            place_finish: 'Москва',
+            ticket_url: 'https://example.com/ticket2'
+          }
+        ]
+      };
+    }
+    
+    // Пример ответа с расписанием для других городов
+    if (message.toLowerCase().includes('москва') && message.toLowerCase().includes('сочи')) {
+      return {
+        type: 'schedule',
+        objects: [
+          {
+            type: 'plane',
+            time_start_utc: Math.floor(Date.now() / 1000) + 86400,
+            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200,
+            place_start: 'Москва',
+            place_finish: 'Ростов-на-Дону',
+            ticket_url: 'https://example.com/ticket3'
+          },
+          {
+            type: 'bus',
+            time_start_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 3600,
+            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 3600 + 7200,
+            place_start: 'Ростов-на-Дону',
+            place_finish: 'Сочи',
+            ticket_url: 'https://example.com/ticket4'
+          }
+        ]
+      };
+    }
+    
+    // Пример текстового ответа
     const responses = [
       'Отличный выбор! Куда бы вы хотели отправиться?',
       'Какие даты поездки вы рассматриваете?',
@@ -46,7 +93,10 @@ const ChatPage: React.FC = () => {
       'Предпочитаете активный отдых или спокойное времяпрепровождение?'
     ];
     
-    return responses[Math.floor(Math.random() * responses.length)];
+    return {
+      type: 'message',
+      text: responses[Math.floor(Math.random() * responses.length)]
+    };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,12 +110,48 @@ const ChatPage: React.FC = () => {
 
     try {
       const response = await mockApiCall(inputValue);
-      const botMessage = { text: response, isBot: true };
-      setMessages(prev => [...prev, botMessage]);
+      if (response.type === 'message') {
+        setMessages(prev => [...prev, { text: response.text, isBot: true }]);
+      } else if (response.type === 'schedule') {
+        setMessages(prev => [...prev, { 
+          text: 'Вот подходящие варианты маршрута:', 
+          isBot: true,
+          schedule: response.objects 
+        }]);
+      }
     } catch (error) {
       console.error('Error getting response:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const formatTime = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getTransportIcon = (type: string) => {
+    switch (type) {
+      case 'plane': return '✈️';
+      case 'train': return '🚂';
+      case 'bus': return '🚌';
+      case 'ship': return '🚢';
+      case 'walk': return '🚶';
+      default: return '🚀';
+    }
+  };
+
+  const translateTransportType = (type: string): string => {
+    switch (type) {
+      case 'plane': return 'самолет';
+      case 'train': return 'поезд';
+      case 'bus': return 'автобус';
+      case 'ship': return 'корабль';
+      case 'walk': return 'пешком';
+      default: return type;
     }
   };
 
@@ -102,6 +188,37 @@ const ChatPage: React.FC = () => {
                   }`}>
                     <p className="text-base break-words">{message.text}</p>
                   </div>
+                  {message.schedule && (
+                    <div className="w-full space-y-2 mt-2">
+                      {message.schedule.map((item, idx) => (
+                        <div key={idx} className="bg-white rounded-xl p-4 border border-[#e6dedb]">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">{getTransportIcon(item.type)}</span>
+                            <span className="text-secondary font-medium capitalize">{translateTransportType(item.type)}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm">
+                            <div className="flex flex-col">
+                              <span className="text-secondary font-medium">{item.place_start}</span>
+                              <span className="text-tertiary">{formatTime(item.time_start_utc)}</span>
+                            </div>
+                            <div className="h-px flex-1 bg-[#e6dedb] mx-4"></div>
+                            <div className="flex flex-col items-end">
+                              <span className="text-secondary font-medium">{item.place_finish}</span>
+                              <span className="text-tertiary">{formatTime(item.time_end_utc)}</span>
+                            </div>
+                          </div>
+                          <a 
+                            href={item.ticket_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="mt-3 block text-center py-2 px-4 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-all"
+                          >
+                            Купить билет
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
