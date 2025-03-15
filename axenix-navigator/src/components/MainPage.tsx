@@ -54,16 +54,16 @@ const MainPage: React.FC = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 px-4 py-3">
             <div className="flex flex-col gap-2 rounded-lg border border-[#e6dedb] p-3">
-              <p className="text-secondary text-2xl font-bold leading-tight">265</p>
-              <p className="text-tertiary text-sm">Посещенных стран</p>
+              <p className="text-secondary text-2xl font-bold leading-tight">AI</p>
+              <p className="text-tertiary text-sm">Умный поиск билетов</p>
             </div>
             <div className="flex flex-col gap-2 rounded-lg border border-[#e6dedb] p-3">
-              <p className="text-secondary text-2xl font-bold leading-tight">14</p>
-              <p className="text-tertiary text-sm">Месяцев в пути</p>
+              <p className="text-secondary text-2xl font-bold leading-tight">1000+</p>
+              <p className="text-tertiary text-sm">Городов в базе</p>
             </div>
             <div className="flex flex-col gap-2 rounded-lg border border-[#e6dedb] p-3">
-              <p className="text-secondary text-2xl font-bold leading-tight">9</p>
-              <p className="text-tertiary text-sm">Пропущенных пересадок</p>
+              <p className="text-secondary text-2xl font-bold leading-tight">100+</p>
+              <p className="text-tertiary text-sm">Авиакомпаний в поиске</p>
             </div>
           </div>
 
