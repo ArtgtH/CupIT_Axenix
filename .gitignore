@@ -176,3 +176,39 @@ cython_debug/
 
 .xml
 .idea
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+axenix-navigator/node_modules
+axenix-navigator/.pnp
+axenix-navigator/.pnp.js
+
+# testing
+axenix-navigator/coverage
+
+# production
+axenix-navigator/build
+
+# misc
+.DS_Store
+axenix-navigator/.DS_Store
+axenix-navigator/.env.local
+axenix-navigator/.env.development.local
+axenix-navigator/.env.test.local
+axenix-navigator/.env.production.local
+
+# logs
+axenix-navigator/npm-debug.log*
+axenix-navigator/yarn-debug.log*
+axenix-navigator/yarn-error.log*
+
+# IDE specific files
+.vscode
+*.swp
+*.swo
+
+# environment variables
+axenix-navigator/.env
+
+# TypeScript
+axenix-navigator/*.tsbuildinfo
