@@ -1,6 +1,6 @@
 from typing import List
 
-from internal.schemas.redis import RedisMessage
+from internal.schemas.redis import RedisMessage, ThreadStatus
 from internal.schemas.responces import (
     ScheduleResponse,
     ScheduleObject,
@@ -10,7 +10,7 @@ from internal.schemas.responces import (
 
 
 def talk_with_god(
-    input_text: str, messages: List[RedisMessage]
+    input_text: str, thread: List[ThreadStatus | RedisMessage]
 ) -> ScheduleResponse | MessageResponse:
     """
     Через эту пиздатню я отправляю в LLM запрос
@@ -22,7 +22,7 @@ def talk_with_god(
     3.2) Возвращает сообщение с еще одним уточняющим вопросом
 
     :param input_text: текст запроса
-    :param messages: контекст из последних сообщений
+    :param thread: контекст из последних сообщений
     :return: расписание(ScheduleResponse) | ответное сообщение(MessageResponse)
     """
     obj_1 = ScheduleObject(
