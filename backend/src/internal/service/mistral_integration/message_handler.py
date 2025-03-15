@@ -178,42 +178,49 @@ class MessageHandler:
             routes_api = GetRoutes()
             route_finder = GetRoutesWithStops(routes_api)
             
-            # Если есть промежуточные города, используем поиск маршрута с остановками
+            # Проверяем наличие промежуточных городов и формируем список остановок
             if entities.mid_city:
+                # Есть промежуточные города
                 stops = [entities.start_city] + entities.mid_city + [entities.end_city]
-                try:
-                    result = route_finder.find_multi_leg_route(stops, api_date_format)
-                    
-                    if result and 'route' in result:
-                        # Создаем объект маршрута для многоэтапного пути
-                        for i, segment in enumerate(result['route']):
-                            # Рассчитываем время начала и конца (в секундах)
-                            start_time = current_timestamp + (i * 7200)  # 2 часа между сегментами
-                            end_time = start_time + segment.get('duration', 3600)
-                            
-                            # Определяем тип транспорта на основе расстояния
-                            distance = segment.get('distance', 0)
-                            if distance > 1000:
-                                transport_type = TransportType.plane
-                            elif distance > 300:
-                                transport_type = TransportType.train
-                            else:
-                                transport_type = TransportType.bus
-                            
-                            schedule_objects.append(
-                                ScheduleObject(
-                                    type=transport_type,
-                                    time_start_utc=start_time,
-                                    time_end_utc=end_time,
-                                    place_start=segment.get('from', ""),
-                                    place_finish=segment.get('to', ""),
-                                    ticket_url=f"http://example.com/ticket/{transport_type}",
-                                )
-                            )
-                except Exception as e:
-                    logger.error(f"Ошибка при поиске маршрута с остановками: {e}")
             else:
-                # Прямой маршрут без промежуточных остановок
+                # Промежуточных городов нет, используем [None]
+                # Для find_multi_leg_route нужен список с городами отправления и прибытия
+                stops = [entities.start_city, None, entities.end_city]
+            
+            try:
+                # Используем один и тот же метод для обоих случаев
+                result = route_finder.find_multi_leg_route(stops, api_date_format)
+                
+                if result and 'route' in result:
+                    # Создаем объект маршрута для многоэтапного пути
+                    for i, segment in enumerate(result['route']):
+                        # Рассчитываем время начала и конца (в секундах)
+                        start_time = current_timestamp + (i * 7200)  # 2 часа между сегментами
+                        end_time = start_time + segment.get('duration', 3600)
+                        
+                        # Определяем тип транспорта на основе расстояния
+                        distance = segment.get('distance', 0)
+                        if distance > 1000:
+                            transport_type = TransportType.plane
+                        elif distance > 300:
+                            transport_type = TransportType.train
+                        else:
+                            transport_type = TransportType.bus
+                        
+                        schedule_objects.append(
+                            ScheduleObject(
+                                type=transport_type,
+                                time_start_utc=start_time,
+                                time_end_utc=end_time,
+                                place_start=segment.get('from', ""),
+                                place_finish=segment.get('to', ""),
+                                ticket_url=f"http://example.com/ticket/{transport_type}",
+                            )
+                        )
+            except Exception as e:
+                logger.error(f"Ошибка при поиске маршрута: {e}")
+                # Если не удалось найти маршрут через find_multi_leg_route, 
+                # пробуем найти прямой маршрут
                 try:
                     segment = route_finder.find_best_route(entities.start_city, entities.end_city, api_date_format)
                     
