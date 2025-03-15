@@ -15,6 +15,18 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const handleNavigateHome = () => {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.3s ease-in-out';
+    
+    setTimeout(() => {
+      navigate('/');
+      requestAnimationFrame(() => {
+        document.body.style.opacity = '1';
+      });
+    }, 300);
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -61,7 +73,10 @@ const ChatPage: React.FC = () => {
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-4 sm:px-10 py-3">
         <div className="flex items-center gap-4 text-secondary">
-          <div className="w-4 h-4 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => navigate('/')}>
+          <div 
+            className="w-4 h-4 cursor-pointer hover:opacity-80 transition-opacity" 
+            onClick={handleNavigateHome}
+          >
             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor"></path>
             </svg>

@@ -4,6 +4,20 @@ import { useNavigate } from 'react-router-dom';
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleStartClick = () => {
+    // Добавляем плавное исчезновение перед переходом
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.3s ease-in-out';
+    
+    setTimeout(() => {
+      navigate('/chat');
+      // Возвращаем opacity после перехода
+      requestAnimationFrame(() => {
+        document.body.style.opacity = '1';
+      });
+    }, 300);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-4 sm:px-10 py-3">
@@ -33,8 +47,8 @@ const MainPage: React.FC = () => {
                   </h2>
                 </div>
                 <button
-                  onClick={() => navigate('/chat')}
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 sm:h-12 px-4 sm:px-5 bg-primary text-white text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-all"
+                  onClick={handleStartClick}
+                  className="flex min-w-[84px] max-w-[480px] items-center justify-center overflow-hidden rounded-xl h-10 sm:h-12 px-4 sm:px-5 bg-primary text-white text-sm sm:text-base font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90 transition-all"
                 >
                   <span className="truncate">Начать</span>
                 </button>
@@ -68,9 +82,9 @@ const MainPage: React.FC = () => {
               { name: 'Лондон', image: 'https://cdn.usegalileo.ai/sdxl10/1c2cd53b-52b9-4e40-9bfa-7c85151bab26.png' },
               { name: 'Дубай', image: 'https://cdn.usegalileo.ai/sdxl10/2cce83e7-b63e-4de7-b50c-457642640971.png' }
             ].map((city, index) => (
-              <div key={index} className="group cursor-pointer">
+              <div key={index} className="overflow-hidden">
                 <div
-                  className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl transition-transform transform group-hover:scale-105"
+                  className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl transition-all duration-300 ease-in-out hover:brightness-110 hover:saturate-150"
                   style={{backgroundImage: `url("${city.image}")`}}
                 ></div>
                 <p className="text-secondary text-base font-medium mt-2">{city.name}</p>
