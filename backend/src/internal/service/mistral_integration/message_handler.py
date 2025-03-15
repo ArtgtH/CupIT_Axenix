@@ -5,10 +5,13 @@
 import json
 import logging
 from typing import List, Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from internal.schemas.redis import RedisMessage
 from internal.schemas.responces import ScheduleResponse, ScheduleObject, TransportType, MessageResponse
+
+from internal.service.Routes.GetRoutesWithStops import GetRoutesWithStops
+from internal.service.Routes.GetRoutes import GetRoutes
 
 from .entities import TravelEntities
 from .extractor import EntityExtractor
@@ -150,6 +153,7 @@ class MessageHandler:
     def _generate_schedule_response(self, entities: TravelEntities) -> ScheduleResponse:
         """
         Формирует ответ с расписанием на основе извлеченных сущностей.
+        Использует API маршрутов для получения реальных данных.
         
         Args:
             entities: Извлеченные сущности
@@ -157,42 +161,135 @@ class MessageHandler:
         Returns:
             Ответ с расписанием
         """
-        # Здесь в реальном приложении был бы запрос в сервис расписаний
-        # В этом примере просто возвращаем тестовые данные
+        # Преобразуем дату в нужный формат (из dd.mm.yyyy в yyyy-mm-dd)
+        try:
+            date_parts = entities.date.split('.')
+            api_date_format = f"{date_parts[2]}-{date_parts[1]}-{date_parts[0]}"
+        except (IndexError, ValueError, AttributeError) as e:
+            logger.error(f"Ошибка при преобразовании даты {entities.date}: {e}")
+            # Используем текущую дату при ошибке
+            api_date_format = datetime.now().strftime("%Y-%m-%d")
         
+        # Инициализируем API маршрутов
+        schedule_objects = []
         current_timestamp = int(datetime.now().timestamp())
         
-        # Формируем объекты расписания с разными типами транспорта
-        schedule_objects = [
-            ScheduleObject(
-                type=TransportType.bus,
-                time_start_utc=current_timestamp,
-                time_end_utc=current_timestamp + 3600,  # +1 час
-                place_start=entities.start_city,
-                place_finish=entities.end_city,
-                ticket_url="http://example.com/ticket/bus",
-            ),
-            ScheduleObject(
-                type=TransportType.train,
-                time_start_utc=current_timestamp + 1800,  # +30 минут от текущего времени
-                time_end_utc=current_timestamp + 5400,  # +1.5 часа от текущего времени
-                place_start=entities.start_city,
-                place_finish=entities.end_city,
-                ticket_url="http://example.com/ticket/train",
-            )
-        ]
+        try:
+            routes_api = GetRoutes()
+            route_finder = GetRoutesWithStops(routes_api)
+            
+            # Если есть промежуточные города, используем поиск маршрута с остановками
+            if entities.mid_city:
+                stops = [entities.start_city] + entities.mid_city + [entities.end_city]
+                try:
+                    result = route_finder.find_multi_leg_route(stops, api_date_format)
+                    
+                    if result and 'route' in result:
+                        # Создаем объект маршрута для многоэтапного пути
+                        for i, segment in enumerate(result['route']):
+                            # Рассчитываем время начала и конца (в секундах)
+                            start_time = current_timestamp + (i * 7200)  # 2 часа между сегментами
+                            end_time = start_time + segment.get('duration', 3600)
+                            
+                            # Определяем тип транспорта на основе расстояния
+                            distance = segment.get('distance', 0)
+                            if distance > 1000:
+                                transport_type = TransportType.plane
+                            elif distance > 300:
+                                transport_type = TransportType.train
+                            else:
+                                transport_type = TransportType.bus
+                            
+                            schedule_objects.append(
+                                ScheduleObject(
+                                    type=transport_type,
+                                    time_start_utc=start_time,
+                                    time_end_utc=end_time,
+                                    place_start=segment.get('from', ""),
+                                    place_finish=segment.get('to', ""),
+                                    ticket_url=f"http://example.com/ticket/{transport_type}",
+                                )
+                            )
+                except Exception as e:
+                    logger.error(f"Ошибка при поиске маршрута с остановками: {e}")
+            else:
+                # Прямой маршрут без промежуточных остановок
+                try:
+                    segment = route_finder.find_best_route(entities.start_city, entities.end_city, api_date_format)
+                    
+                    if segment:
+                        duration = segment.get('duration', 3600)
+                        distance = segment.get('distance', 0)
+                        
+                        # Определяем доступные типы транспорта на основе расстояния
+                        transport_types = []
+                        
+                        if distance > 1000:
+                            transport_types.append(TransportType.plane)
+                        
+                        if distance > 100:
+                            transport_types.append(TransportType.train)
+                        
+                        if distance < 800:
+                            transport_types.append(TransportType.bus)
+                        
+                        # Если не определили ни один тип транспорта, добавляем поезд и автобус по умолчанию
+                        if not transport_types:
+                            transport_types = [TransportType.train, TransportType.bus]
+                        
+                        # Создаем объекты расписания для каждого типа транспорта
+                        for i, transport_type in enumerate(transport_types):
+                            # Разное время начала для разных типов транспорта
+                            start_time = current_timestamp + (i * 3600)  # 1 час между отправлениями
+                            
+                            # Рассчитываем продолжительность в зависимости от типа транспорта
+                            if transport_type == TransportType.plane:
+                                duration_factor = 0.5  # Самолет быстрее
+                            elif transport_type == TransportType.train:
+                                duration_factor = 1.0  # Стандартная скорость
+                            else:
+                                duration_factor = 1.5  # Автобус медленнее
+                            
+                            adjusted_duration = int(duration * duration_factor)
+                            
+                            schedule_objects.append(
+                                ScheduleObject(
+                                    type=transport_type,
+                                    time_start_utc=start_time,
+                                    time_end_utc=start_time + adjusted_duration,
+                                    place_start=entities.start_city,
+                                    place_finish=entities.end_city,
+                                    ticket_url=f"http://example.com/ticket/{transport_type}",
+                                )
+                            )
+                except Exception as e:
+                    logger.error(f"Ошибка при поиске прямого маршрута: {e}")
+                    
+        except Exception as e:
+            logger.error(f"Общая ошибка при поиске маршрутов: {e}")
         
-        # Добавляем самолет если есть промежуточные города
-        if entities.mid_city:
-            schedule_objects.append(
+        # Если не нашли ни одного маршрута, используем заглушку
+        if not schedule_objects:
+            logger.warning(f"Не найдены маршруты для {entities.start_city} - {entities.end_city} на {api_date_format}")
+            
+            # Заглушка для случая, когда маршруты не найдены
+            schedule_objects = [
                 ScheduleObject(
-                    type=TransportType.plane,
-                    time_start_utc=current_timestamp + 3600,  # +1 час от текущего времени
-                    time_end_utc=current_timestamp + 7200,  # +2 часа от текущего времени
+                    type=TransportType.bus,
+                    time_start_utc=current_timestamp,
+                    time_end_utc=current_timestamp + 3600,
                     place_start=entities.start_city,
                     place_finish=entities.end_city,
-                    ticket_url="http://example.com/ticket/plane",
+                    ticket_url="http://example.com/ticket/bus",
+                ),
+                ScheduleObject(
+                    type=TransportType.train,
+                    time_start_utc=current_timestamp + 1800,
+                    time_end_utc=current_timestamp + 5400,
+                    place_start=entities.start_city,
+                    place_finish=entities.end_city,
+                    ticket_url="http://example.com/ticket/train",
                 )
-            )
+            ]
         
         return ScheduleResponse(objects=schedule_objects) 
