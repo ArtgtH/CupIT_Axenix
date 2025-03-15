@@ -1,0 +1,1367 @@
+{
+    "search": {
+        "from": {
+            "type": "settlement",
+            "title": "Самара",
+            "short_title": "Самара",
+            "popular_title": "Самара",
+            "code": "c51"
+        },
+        "to": {
+            "type": "settlement",
+            "title": "Москва",
+            "short_title": "Москва",
+            "popular_title": "Москва",
+            "code": "c213"
+        },
+        "date": "2025-09-02"
+    },
+    "segments": [
+        {
+            "thread": {
+                "number": "063Й",
+                "title": "Самара — Санкт-Петербург",
+                "short_title": "Самара — Санкт-Петербург",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "063J_1_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=063J_1_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Восточный вокзал)",
+                "short_title": null,
+                "popular_title": "Восточный вокзал",
+                "code": "s9879173",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 54480.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T00:33:00+04:00",
+            "arrival": "2025-09-02T14:41:00+03:00",
+            "start_date": "2025-09-02"
+        },
+        {
+            "thread": {
+                "number": "317Щ",
+                "title": "Бишкек — Москва",
+                "short_title": "Бишкек — Москва",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 127,
+                    "title": "Кыргыз Темир Жолу",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "г.Бишкек, ул. Толстого, д. 83",
+                    "url": "http://www.kjd.kg/ru/",
+                    "email": "",
+                    "contacts": "720009, г.Бишкек, ул. Льва Толстого, 83\r\nПриёмная: \t0 (312) 92-74-71\r\nФакс: \t0 (312) 92-69-32\r\nE-mail: \t info@railway.aknet.kg",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/Kirgiz.gif",
+                    "logo_svg": null
+                },
+                "uid": "317SHH_2_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-08-30&uid=317SHH_2_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Павелецкий вокзал)",
+                "short_title": "М-Павелецк.",
+                "popular_title": "Павелецкий вокзал",
+                "code": "s2000005",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 74820.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T02:21:00+04:00",
+            "arrival": "2025-09-02T22:08:00+03:00",
+            "start_date": "2025-08-30"
+        },
+        {
+            "thread": {
+                "number": "SU 1217",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus A320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1217_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1217_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T06:35:00+04:00",
+            "arrival": "2025-09-02T07:25:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "SU 1211",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus A320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1211_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1211_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T12:05:00+04:00",
+            "arrival": "2025-09-02T12:55:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "131Е",
+                "title": "Орск — Москва",
+                "short_title": "Орск — Москва",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "131E_0_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-01&uid=131E_0_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Павелецкий вокзал)",
+                "short_title": "М-Павелецк.",
+                "popular_title": "Павелецкий вокзал",
+                "code": "s2000005",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 81780.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T12:46:00+04:00",
+            "arrival": "2025-09-03T10:29:00+03:00",
+            "start_date": "2025-09-01"
+        },
+        {
+            "thread": {
+                "number": "SU 1219",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus A320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1219_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1219_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T13:55:00+04:00",
+            "arrival": "2025-09-02T14:45:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "SU 1685",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus A320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1685_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1685_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T15:20:00+04:00",
+            "arrival": "2025-09-02T16:10:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "015М",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "015M_1_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=015M_1_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Казанский вокзал)",
+                "short_title": "М-Казанская",
+                "popular_title": "Казанский вокзал",
+                "code": "s2000003",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 53940.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T15:41:00+04:00",
+            "arrival": "2025-09-03T05:40:00+03:00",
+            "start_date": "2025-09-02"
+        },
+        {
+            "thread": {
+                "number": "013Е",
+                "title": "Челябинск — Москва",
+                "short_title": "Челябинск — Москва",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "013E_2_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-01&uid=013E_2_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Казанский вокзал)",
+                "short_title": "М-Казанская",
+                "popular_title": "Казанский вокзал",
+                "code": "s2000003",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 50580.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T17:07:00+04:00",
+            "arrival": "2025-09-03T06:10:00+03:00",
+            "start_date": "2025-09-01"
+        },
+        {
+            "thread": {
+                "number": "SU 1213",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus A320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1213_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1213_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 7200.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T17:35:00+04:00",
+            "arrival": "2025-09-02T18:35:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "S7 1074",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 23,
+                    "title": "S7 Airlines",
+                    "codes": {
+                        "sirena": "С7",
+                        "iata": "S7",
+                        "icao": null
+                    },
+                    "address": "г. Москва, Новая пл., 3/4, Политехнический музей, подъезд 4, м. Китай-город",
+                    "url": "http://www.s7.ru/",
+                    "email": "",
+                    "contacts": "Телефон: 8-800-200-000-7 (звонок по России бесплатный)",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo_2_Yandex.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/S7.svg"
+                },
+                "vehicle": "Airbus А320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "S7-1074_250902_c23_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=S7-1074_250902_c23_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Домодедово",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600216",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "NULL",
+            "arrival_terminal": "NULL",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T17:55:00+04:00",
+            "arrival": "2025-09-02T18:45:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "DP 424",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 9144,
+                    "title": "Победа",
+                    "codes": {
+                        "sirena": "ДР",
+                        "iata": "DP",
+                        "icao": null
+                    },
+                    "address": null,
+                    "url": "https://pobeda.aero/",
+                    "email": null,
+                    "contacts": "115114 Москва, ул. Кожевническая, д.7, стр.1.\r\nТелефон колл-центра 8 (809) 505-47-77. Цена от 55 руб. до 60 руб. 17 коп./минута, не включая НДС, в зависимости от региона и оператора (по данным на ноябрь 2014). \r\nДля звонков не из России: +7 (499) 215-23-00 (тарифицируется оператором как междугородный звонок).",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/ru_2.png",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/pobeda_ak.svg"
+                },
+                "vehicle": "Boeing 737-800",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "DP-424_250902_c9144_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=DP-424_250902_c9144_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Внуково",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600215",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "A",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T18:35:00+04:00",
+            "arrival": "2025-09-02T19:25:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "031У",
+                "title": "Орск — Москва",
+                "short_title": "Орск — Москва",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "031U_0_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=031U_0_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Казанский вокзал)",
+                "short_title": "М-Казанская",
+                "popular_title": "Казанский вокзал",
+                "code": "s2000003",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 61140.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T18:41:00+04:00",
+            "arrival": "2025-09-03T10:40:00+03:00",
+            "start_date": "2025-09-02"
+        },
+        {
+            "thread": {
+                "number": "FV 6078",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 8565,
+                    "title": "Россия",
+                    "codes": {
+                        "sirena": "ФВ",
+                        "iata": "FV",
+                        "icao": null
+                    },
+                    "address": "Санкт-Петербург, ул. Пилотов, д. 18",
+                    "url": "https://www.rossiya-airlines.com/",
+                    "email": null,
+                    "contacts": "Офис продаж в Санкт-Петербурге: Невский пр., д. 61 <br>\r\nПредставительство в Москве: ул. 2-ая Тверская-Ямская, д.20/22 <br>\r\n\r\nТелефон call-центра: 647-0-647.",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logorus_1.jpg",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/R-30x30__opt.svg"
+                },
+                "vehicle": "Сухой Суперджет 100",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "FV-6078_250902_c8565_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=FV-6078_250902_c8565_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 7200.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T19:15:00+04:00",
+            "arrival": "2025-09-02T20:15:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "009Й",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "009J_7_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=009J_7_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Казанский вокзал)",
+                "short_title": "М-Казанская",
+                "popular_title": "Казанский вокзал",
+                "code": "s2000003",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 47100.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-02T19:55:00+04:00",
+            "arrival": "2025-09-03T08:00:00+03:00",
+            "start_date": "2025-09-02"
+        },
+        {
+            "thread": {
+                "number": "SU 1215",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus А321",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1215_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1215_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 6900.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T20:40:00+04:00",
+            "arrival": "2025-09-02T21:35:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "DP 422",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 9144,
+                    "title": "Победа",
+                    "codes": {
+                        "sirena": "ДР",
+                        "iata": "DP",
+                        "icao": null
+                    },
+                    "address": null,
+                    "url": "https://pobeda.aero/",
+                    "email": null,
+                    "contacts": "115114 Москва, ул. Кожевническая, д.7, стр.1.\r\nТелефон колл-центра 8 (809) 505-47-77. Цена от 55 руб. до 60 руб. 17 коп./минута, не включая НДС, в зависимости от региона и оператора (по данным на ноябрь 2014). \r\nДля звонков не из России: +7 (499) 215-23-00 (тарифицируется оператором как междугородный звонок).",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/ru_2.png",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/pobeda_ak.svg"
+                },
+                "vehicle": "Boeing 737-800",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "DP-422_250902_c9144_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=DP-422_250902_c9144_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Внуково",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600215",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "A",
+            "stops": "",
+            "duration": 6600.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T22:45:00+04:00",
+            "arrival": "2025-09-02T23:35:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "SU 1605",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 26,
+                    "title": "Аэрофлот",
+                    "codes": {
+                        "sirena": "СУ",
+                        "iata": "SU",
+                        "icao": "AFL"
+                    },
+                    "address": "Москва, Ленинградский пр., д.37, корп.9",
+                    "url": "http://www.aeroflot.ru/",
+                    "email": "",
+                    "contacts": "Центр информации и бронирования: +7 (495) 223-55-55,  +7 (800) 444-55-55. <br>\r\ne-mail: callcenter@aeroflot.ru",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/aeroflot_logo_ru.gif",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/Aeroflot_1.svg"
+                },
+                "vehicle": "Airbus A320",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "SU-1605_250902_c26_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=SU-1605_250902_c26_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Шереметьево",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600213",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "B",
+            "stops": "",
+            "duration": 7200.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T23:05:00+04:00",
+            "arrival": "2025-09-03T00:05:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "UT 358",
+                "title": "Самара — Москва",
+                "short_title": "Самара — Москва",
+                "carrier": {
+                    "code": 29,
+                    "title": "ЮТэйр",
+                    "codes": {
+                        "sirena": "ЮТ",
+                        "iata": "UT",
+                        "icao": "UTA"
+                    },
+                    "address": null,
+                    "url": "https://www.utair.ru/",
+                    "email": null,
+                    "contacts": "",
+                    "phone": "",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/Utair.jpg",
+                    "logo_svg": "https://yastat.net/s3/rasp/media/data/company/svg/utair2.svg"
+                },
+                "vehicle": "Boeing 737-800",
+                "express_type": null,
+                "transport_type": "plane",
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "uid": "UT-358_250902_c29_12",
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-02&uid=UT-358_250902_c29_12"
+            },
+            "from": {
+                "type": "station",
+                "title": "Курумоч",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600380",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "to": {
+                "type": "station",
+                "title": "Внуково",
+                "short_title": null,
+                "popular_title": null,
+                "code": "s9600215",
+                "station_type": "airport",
+                "station_type_name": "аэропорт",
+                "transport_type": "plane"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": "",
+            "arrival_terminal": "A",
+            "stops": "",
+            "duration": 7200.0,
+            "start_date": "2025-09-02",
+            "departure": "2025-09-02T23:10:00+04:00",
+            "arrival": "2025-09-03T00:10:00+03:00",
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            }
+        },
+        {
+            "thread": {
+                "number": "063Й",
+                "title": "Самара — Санкт-Петербург",
+                "short_title": "Самара — Санкт-Петербург",
+                "express_type": null,
+                "transport_type": "train",
+                "carrier": {
+                    "code": 112,
+                    "title": "РЖД/ФПК",
+                    "codes": {
+                        "sirena": null,
+                        "iata": null,
+                        "icao": null
+                    },
+                    "address": "Москва, ул. Новая Басманная , д. 2",
+                    "url": "http://www.rzd.ru/",
+                    "email": "info@rzd.ru",
+                    "contacts": "Единая телефонная линия: +7 (800) 775-00-00 (звонок бесплатный из всех регионов РФ).",
+                    "phone": "+7 (800) 775-00-00",
+                    "logo": "https://yastat.net/s3/rasp/media/data/company/logo/logo.gif",
+                    "logo_svg": null
+                },
+                "uid": "063J_1_2",
+                "vehicle": null,
+                "transport_subtype": {
+                    "title": null,
+                    "code": null,
+                    "color": null
+                },
+                "thread_method_link": "api.rasp.yandex.net/v3/thread/?date=2025-09-03&uid=063J_1_2"
+            },
+            "stops": "",
+            "from": {
+                "type": "station",
+                "title": "Самара",
+                "short_title": "",
+                "popular_title": "",
+                "code": "s9606096",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "to": {
+                "type": "station",
+                "title": "Москва (Восточный вокзал)",
+                "short_title": null,
+                "popular_title": "Восточный вокзал",
+                "code": "s9879173",
+                "station_type": "train_station",
+                "station_type_name": "вокзал",
+                "transport_type": "train"
+            },
+            "departure_platform": "",
+            "arrival_platform": "",
+            "departure_terminal": null,
+            "arrival_terminal": null,
+            "duration": 54480.0,
+            "has_transfers": false,
+            "tickets_info": {
+                "et_marker": false,
+                "places": []
+            },
+            "departure": "2025-09-03T00:33:00+04:00",
+            "arrival": "2025-09-03T14:41:00+03:00",
+            "start_date": "2025-09-03"
+        }
+    ],
+    "interval_segments": [],
+    "pagination": {
+        "total": 20,
+        "limit": 100,
+        "offset": 0
+    }
+}
