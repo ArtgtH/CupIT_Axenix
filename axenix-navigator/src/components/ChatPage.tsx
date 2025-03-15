@@ -85,14 +85,14 @@ const ChatPage: React.FC = () => {
         </div>
       </header>
       <main className="flex-1 px-4 md:px-40 py-5 flex justify-center">
-        <div className="w-full max-w-2xl flex flex-col">
+        <div className="w-full max-w-2xl flex flex-col h-[calc(100vh-8rem)]">
           <div className="flex flex-wrap justify-between gap-3 p-4">
             <h1 className="text-secondary text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">
               Навигатор Axenix
             </h1>
           </div>
           
-          <div className="flex-1 overflow-y-auto space-y-4">
+          <div className="flex-1 overflow-y-auto space-y-4 scroll-smooth">
             {messages.map((message, index) => (
               <div key={index} className={`flex items-end gap-3 p-4 ${!message.isBot ? 'flex-row-reverse' : ''}`}>
                 {message.isBot && (
@@ -116,7 +116,7 @@ const ChatPage: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <form onSubmit={handleSubmit} className="sticky bottom-0 bg-white px-4 py-3">
+          <form onSubmit={handleSubmit} className="sticky bottom-0 bg-white px-4 py-3 border-t border-border">
             <div className="flex items-center gap-3">
               <div className="flex-1 relative">
                 <input
