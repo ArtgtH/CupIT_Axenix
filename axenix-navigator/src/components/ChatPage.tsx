@@ -94,7 +94,7 @@ const ChatPage: React.FC = () => {
           
           <div className="flex-1 overflow-y-auto space-y-4">
             {messages.map((message, index) => (
-              <div key={index} className="flex items-end gap-3 p-4">
+              <div key={index} className={`flex items-end gap-3 p-4 ${!message.isBot ? 'flex-row-reverse' : ''}`}>
                 {message.isBot && (
                   <div
                     className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0"
