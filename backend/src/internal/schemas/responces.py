@@ -12,9 +12,14 @@ class TransportType(str, Enum):
     walk = "walk"
 
 
+class ResponseType(str, Enum):
+    message = "message"
+    schedule = "schedule"
+
+
 class MessageResponse(BaseModel):
-    type: str = Field("message", description="Type of response")
-    text: str = Field(..., description="Markdown formatted message")
+    type: ResponseType = Field(ResponseType.message, description="Type of response")
+    text: str = Field(..., description="Message response")
 
 
 class ScheduleObject(BaseModel):
@@ -27,5 +32,5 @@ class ScheduleObject(BaseModel):
 
 
 class ScheduleResponse(BaseModel):
-    type: str = Field("schedule", description="Type of response")
+    type: ResponseType = Field(ResponseType.schedule, description="Type of response")
     objects: List[ScheduleObject] = Field(..., description="List of schedule objects")
