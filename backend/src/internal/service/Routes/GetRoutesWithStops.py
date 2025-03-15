@@ -1,4 +1,4 @@
-from GetRoutes import GetRoutes
+from .GetRoutes import GetRoutes
 
 class GetRoutesWithStops:
     def __init__(self, routes_api: GetRoutes):
