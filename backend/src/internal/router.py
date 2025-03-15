@@ -4,7 +4,7 @@ from typing import Union, AsyncGenerator
 import redis.asyncio as redis
 from fastapi import APIRouter, Depends
 
-from internal.schemas.redis import RedisMessage, Role, ThreadStatus
+from internal.schemas.redis import RedisMessage, Role
 from internal.schemas.requests import TaskRequest
 from internal.schemas.responces import MessageResponse, ScheduleResponse
 from internal.service.ai_starter import talk_with_god
@@ -30,19 +30,12 @@ async def process_user_request(
     session_id = str(user_request.id)
 
     raw_thread = await redis_client.lrange(session_id, 0, -1)
-    if len(raw_thread) == 0:
-        status = ThreadStatus(date="", start_city="", end_city="", mid_city="")
-        previous_messages = []
-        await redis_client.lpush(session_id, status.json())
-    else:
-        status = ThreadStatus.parse_raw(raw_thread[0])
-        previous_messages = [RedisMessage.parse_raw(msg) for msg in raw_thread[1:]]
+    previous_messages = [RedisMessage.parse_raw(msg) for msg in raw_thread]
 
     message = RedisMessage(role=Role.user, text=text)
     await redis_client.rpush(session_id, message.json())
 
-    thread = [status, *previous_messages]
-    res = talk_with_god(text, thread)
+    res = talk_with_god(text, previous_messages)
     if isinstance(res, MessageResponse):
         answer = RedisMessage(role=Role.ai, text=res.text)
         await redis_client.rpush(session_id, answer.json())

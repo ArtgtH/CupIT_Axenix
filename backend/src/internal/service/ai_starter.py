@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import os
 
-from internal.schemas.redis import RedisMessage, ThreadStatus
+from internal.schemas.redis import RedisMessage
 from internal.schemas.responces import (
     ScheduleResponse,
     ScheduleObject,
@@ -201,7 +201,7 @@ def parse_message_history(messages: List[RedisMessage]) -> TravelEntities:
 
 
 def talk_with_god(
-    input_text: str, thread: List[ThreadStatus | RedisMessage]
+    input_text: str, thread: List[RedisMessage]
 ) -> ScheduleResponse | MessageResponse:
     """
     Функция для общения с пользователем и извлечения сущностей о маршруте.
