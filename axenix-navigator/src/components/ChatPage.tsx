@@ -72,33 +72,25 @@ const ChatPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-4 sm:px-10 py-3">
-        <div className="flex items-center gap-4 text-secondary">
-          <div 
-            className="w-4 h-4 cursor-pointer hover:opacity-80 transition-opacity" 
+        <div className="flex items-center gap-2 text-secondary">
+          <img 
+            src="/images/logo-big.png" 
+            alt="Axenix" 
+            className="h-6 w-auto cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={handleNavigateHome}
-          >
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor"></path>
-            </svg>
-          </div>
+          />
           <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">Навигатор Axenix</h2>
         </div>
       </header>
       <main className="flex-1 px-4 md:px-40 py-5 flex justify-center">
         <div className="w-full max-w-2xl flex flex-col h-[calc(100vh-8rem)]">
-          <div className="flex flex-wrap justify-between gap-3 p-4">
-            <h1 className="text-secondary text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">
-              Навигатор Axenix
-            </h1>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto space-y-4 scroll-smooth">
+          <div className="flex-1 overflow-y-auto space-y-4 scroll-smooth pb-4">
             {messages.map((message, index) => (
               <div key={index} className={`flex items-end gap-3 p-4 ${!message.isBot ? 'flex-row-reverse' : ''}`}>
                 {message.isBot && (
                   <div
                     className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0"
-                    style={{backgroundImage: 'url("https://cdn.usegalileo.ai/sdxl10/0830ed68-1304-4318-a721-169d01873e24.png")'}}
+                    style={{backgroundImage: 'url("/images/logo-small.jpg")'}}
                   />
                 )}
                 <div className={`flex flex-col gap-1 ${message.isBot ? 'items-start' : 'items-end'} max-w-[80%]`}>
@@ -116,7 +108,7 @@ const ChatPage: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <form onSubmit={handleSubmit} className="sticky bottom-0 bg-white px-4 py-3 border-t border-border">
+          <form onSubmit={handleSubmit} className="sticky bottom-0 bg-white px-4 py-3 border-t border-border mt-auto">
             <div className="flex items-center gap-3">
               <div className="flex-1 relative">
                 <input
@@ -143,4 +135,4 @@ const ChatPage: React.FC = () => {
   );
 };
 
-export default ChatPage; 
+export default ChatPage;

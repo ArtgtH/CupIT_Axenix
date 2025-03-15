@@ -21,12 +21,8 @@ const MainPage: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-4 sm:px-10 py-3">
-        <div className="flex items-center gap-4 text-secondary">
-          <div className="w-4 h-4">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" clipRule="evenodd" d="M24 4H42V17.3333V30.6667H24V44H6V30.6667V17.3333H24V4Z" fill="currentColor"></path>
-            </svg>
-          </div>
+        <div className="flex items-center gap-2 text-secondary">
+          <img src="/images/logo-big.png" alt="Axenix" className="h-6 w-auto" />
           <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">Навигатор Axenix</h2>
         </div>
       </header>
