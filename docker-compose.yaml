@@ -14,6 +14,14 @@ services:
     networks:
       - dev
 
+  frontend-builder:
+    image: littump/navigator-frontend:latest
+    container_name: frontend-builder
+    volumes:
+      - frontend-build:/app/build
+    networks:
+      - dev
+
   redis:
     image: redis:latest
     container_name: "redis"
@@ -34,14 +42,17 @@ services:
       - "443:443"
     depends_on:
       - api
+      - frontend-builder
     volumes:
       - "./nginx.conf:/etc/nginx/nginx.conf"
       - "/etc/letsencrypt:/etc/letsencrypt"
+      - frontend-build:/usr/share/nginx/html
     networks:
       - dev
 
 volumes:
   redis-data:
+  frontend-build:
 
 networks:
   dev:
