@@ -20,18 +20,18 @@ class GetRoutes:
     def _get_station_code(self, city_name: str, lang: str = "ru_RU") -> Optional[str]:
         """
         Получает код станции по названию города.
-        
+
         :param city_name: Название города.
         :param lang: Язык ответа (по умолчанию 'ru_RU').
         :return: Код станции или None, если город не найден.
         """
         url = f"{self.base_url}stations_list/"
         params = {"apikey": self.api_key, "format": "json", "lang": lang}
-        
+
         try:
             response = requests.get(url, params=params, timeout=20)
             response.raise_for_status()
-            
+
             for country in response.json().get("countries", []):
                 for region in country.get("regions", []):
                     for settlement in region.get("settlements", []):
@@ -44,7 +44,7 @@ class GetRoutes:
     def get_routes(self, from_city: str, to_city: str, date: str, lang: str = "ru_RU", page: int = 1) -> Optional[Dict[str, Any]]:
         """
         Получает список маршрутов между городами на указанную дату.
-        
+
         :param from_city: Название города отправления.
         :param to_city: Название города назначения.
         :param date: Дата в формате 'YYYY-MM-DD'.
@@ -57,10 +57,10 @@ class GetRoutes:
         if not from_code or not to_code:
             logging.error("Не удалось определить код станции для одного из городов")
             return None
-        
+
         url = f"{self.base_url}search/"
         params = {"apikey": self.api_key, "format": "json", "from": from_code, "to": to_code, "lang": lang, "page": page, "date": date}
-        
+
         try:
             response = requests.get(url, params=params, timeout=20)
             response.raise_for_status()
@@ -72,7 +72,7 @@ class GetRoutes:
     def _get_fastest_routes(self, routes_data: Dict[str, Any], num_routes: int = 6) -> List[Dict[str, Any]]:
         """
         Возвращает заданное количество самых быстрых маршрутов, включая хотя бы один из каждого типа транспорта.
-        
+
         :param routes_data: JSON-данные с маршрутами.
         :param num_routes: Количество маршрутов, которое нужно вернуть (по умолчанию 6).
         :return: Список самых быстрых маршрутов.
@@ -80,30 +80,30 @@ class GetRoutes:
         if not routes_data or "segments" not in routes_data:
             logging.error("Некорректные данные маршрутов")
             return []
-        
+
         segments = sorted(routes_data["segments"], key=lambda x: x.get("duration", float("inf")))
         transport_groups = {transport: [] for transport in self.transport_types}
-        
+
         for segment in segments:
             transport_type = segment.get("thread", {}).get("transport_type")
             if transport_type in transport_groups:
                 transport_groups[transport_type].append(segment)
-        
+
         fastest_routes = []
         for transport, routes in transport_groups.items():
             if routes:
                 fastest_routes.append(routes[0])
-        
+
         remaining_slots = num_routes - len(fastest_routes)
         additional_routes = [route for route in segments if route not in fastest_routes][:remaining_slots]
         fastest_routes.extend(additional_routes)
-        
+
         return fastest_routes[:num_routes]
 
     def get_aggregated_routes(self, from_city: str, to_city: str, date: str, num_routes: int = 12) -> List[Dict[str, Any]]:
         """
         Получает и агрегирует маршруты, возвращая заданное количество самых быстрых.
-        
+
         :param from_city: Название города отправления.
         :param to_city: Название города назначения.
         :param date: Дата в формате 'YYYY-MM-DD'.
@@ -121,7 +121,6 @@ if __name__ == "__main__":
     from_city = "Самара"
     to_city = "Москва"
     date = "2025-09-02"
-    
+
     fastest_routes = yandex_schedule.get_aggregated_routes(from_city, to_city, date, num_routes=12)
     print(json.dumps(fastest_routes, indent=4, ensure_ascii=False))
-

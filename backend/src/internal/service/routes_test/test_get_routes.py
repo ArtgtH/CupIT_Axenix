@@ -1,6 +1,3 @@
-import sys
-sys.path.append(r'D:\repositories\CupIT_Axenix\backend\src')
-
 import unittest
 from datetime import datetime
 from typing import List

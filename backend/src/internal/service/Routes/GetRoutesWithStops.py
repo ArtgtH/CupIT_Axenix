@@ -28,13 +28,13 @@ class GetRoutesWithStops:
         """
         logging.info(f"Поиск маршрутов: {start} -> {end} на {date}")
         routes_data = self.routes_api.get_routes(start, end, date)
-        
+
         if not routes_data or "segments" not in routes_data:
             logging.warning(f"Маршруты не найдены: {start} -> {end} на {date}")
             return None
 
         segments = routes_data["segments"]
-        
+
         if not segments:
             logging.warning(f"Сегменты отсутствуют: {start} -> {end} на {date}")
             return None
