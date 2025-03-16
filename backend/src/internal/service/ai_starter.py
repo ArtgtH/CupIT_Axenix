@@ -30,12 +30,9 @@ def talk_with_god(
         ScheduleResponse, если все сущности извлечены
         MessageResponse, если требуется уточнение
     """
-    # Создаем обработчик сообщений или получаем существующий экземпляр
     handler = MessageHandler.get_instance()
     
-    # Добавляем текущий запрос пользователя к истории сообщений
     current_message = RedisMessage(text=input_text)
     full_thread = thread + [current_message]
     
-    # Обрабатываем историю сообщений и получаем ответ
     return handler.process_message(full_thread)

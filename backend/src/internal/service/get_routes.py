@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import List, Optional
 
 from internal.schemas.responces import ScheduleResponse, ScheduleObject, TransportType
-from internal.service.routes.GetRoutes import GetRoutes
-from internal.service.routes.GetRoutesWithStops import GetRoutesWithStops
+from internal.service.Routes.GetRoutes import GetRoutes
+from internal.service.Routes.GetRoutesWithStops import GetRoutesWithStops
 
 
 logging.basicConfig(

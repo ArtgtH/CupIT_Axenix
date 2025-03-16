@@ -10,12 +10,9 @@ from datetime import datetime, timedelta
 from internal.schemas.redis import RedisMessage
 from internal.schemas.responces import ScheduleResponse, ScheduleObject, TransportType, MessageResponse
 
-from internal.service.Routes.GetRoutesWithStops import GetRoutesWithStops
-from internal.service.Routes.GetRoutes import GetRoutes
-
 from .entities import TravelEntities
 from .extractor import EntityExtractor
-
+from internal.service.get_routes import get_routes
 
 logger = logging.getLogger(__name__)
 
@@ -213,115 +210,15 @@ class MessageHandler:
             logger.error(f"Ошибка при преобразовании даты {entities.date}: {e}")
             # Используем текущую дату при ошибке
             api_date_format = datetime.now().strftime("%Y-%m-%d")
+
+        if entities.mid_city:
+            stops = [entities.start_city] + entities.mid_city + [entities.end_city]
+        else:
+            stops = [entities.start_city, entities.end_city]
         
-        # Инициализируем API маршрутов
-        schedule_objects = []
-        current_timestamp = int(datetime.now().timestamp())
+        schedule_response = get_routes(stops, api_date_format)
         
-        try:
-            # Изменено: создаем объекты API без передачи аргументов
-            route_finder = GetRoutesWithStops()
-            
-            # Проверяем наличие промежуточных городов и формируем список остановок
-            if entities.mid_city:
-                # Есть промежуточные города
-                stops = [entities.start_city] + entities.mid_city + [entities.end_city]
-            else:
-                # Промежуточных городов нет, используем простой список
-                stops = [entities.start_city, entities.end_city]
-            
-            try:
-                # Используем маршрут с остановками
-                result = route_finder.find_multi_leg_route(stops, api_date_format)
-                
-                if result and 'route' in result:
-                    # Создаем объект маршрута для многоэтапного пути
-                    for i, segment in enumerate(result['route']):
-                        # Рассчитываем время начала и конца (в секундах)
-                        start_time = current_timestamp + (i * 7200)  # 2 часа между сегментами
-                        end_time = start_time + segment.get('duration', 3600)
-                        
-                        # Определяем тип транспорта - чередуем автобус и поезд
-                        transport_type = TransportType.bus if i % 2 == 0 else TransportType.train
-                        
-                        # Добавлено: формируем URL для билетов
-                        ticket_url = f"http://example.com/ticket/{transport_type}/{entities.start_city}-{entities.end_city}"
-                        
-                        schedule_objects.append(ScheduleObject(
-                            type=transport_type,
-                            place_start=segment.get('from', entities.start_city),
-                            place_finish=segment.get('to', entities.end_city),
-                            time_start_utc=start_time,
-                            time_end_utc=end_time,
-                            ticket_url=ticket_url  # Добавлено: обязательное поле
-                        ))
-                else:
-                    logger.warning(f"Не найдены маршруты для {stops} на {api_date_format}")
-                    # Падение в запасной вариант - ищем прямой маршрут
-                    direct_route = route_finder.routes_api.get_routes(entities.start_city, entities.end_city, api_date_format)
-                    
-                    if direct_route:
-                        # Создаем объект маршрута для прямого пути
-                        start_time = current_timestamp
-                        end_time = start_time + 3600  # Фиктивная продолжительность - 1 час
-                        
-                        schedule_objects.append(ScheduleObject(
-                            type=TransportType.bus,
-                            place_start=entities.start_city,
-                            place_finish=entities.end_city,
-                            time_start_utc=start_time,
-                            time_end_utc=end_time,
-                            ticket_url=f"http://example.com/ticket/bus/{entities.start_city}-{entities.end_city}"  # Добавлено
-                        ))
-            except Exception as e:
-                logger.error(f"Ошибка при поиске маршрута: {e}")
-                # Падение в запасной вариант при любых ошибках API
-                try:
-                    direct_route = route_finder.routes_api.get_routes(entities.start_city, entities.end_city, api_date_format)
-                    
-                    if direct_route:
-                        # Создаем объект маршрута для прямого пути
-                        start_time = current_timestamp
-                        end_time = start_time + 3600  # Фиктивная продолжительность - 1 час
-                        
-                        schedule_objects.append(ScheduleObject(
-                            type=TransportType.bus,
-                            place_start=entities.start_city,
-                            place_finish=entities.end_city,
-                            time_start_utc=start_time,
-                            time_end_utc=end_time,
-                            ticket_url=f"http://example.com/ticket/bus/{entities.start_city}-{entities.end_city}"  # Добавлено
-                        ))
-                except Exception as inner_e:
-                    logger.error(f"Ошибка при поиске прямого маршрута: {inner_e}")
-        except Exception as e:
-            logger.error(f"Непредвиденная ошибка при формировании расписания: {e}")
-        
-        # Если не удалось получить ни одного маршрута, создаем заглушки
-        if not schedule_objects:
-            logger.warning(f"Не найдены маршруты для {entities.start_city} - {entities.end_city} на {api_date_format}")
-            
-            # Создаем заглушки с расписанием
-            start_time = current_timestamp
-            
-            # Автобус
-            schedule_objects.append(ScheduleObject(
-                type=TransportType.bus,
-                place_start=entities.start_city,
-                place_finish=entities.end_city,
-                time_start_utc=start_time,
-                time_end_utc=start_time + 3600,  # +1 час
-                ticket_url=f"http://example.com/ticket/bus/{entities.start_city}-{entities.end_city}"  # Добавлено
-            ))
-            
-            # Поезд
-            schedule_objects.append(ScheduleObject(
-                type=TransportType.train,
-                place_start=entities.start_city,
-                place_finish=entities.end_city,
-                time_start_utc=start_time + 1800,  # +30 минут
-                time_end_utc=start_time + 5400,  # +1.5 часа
-                ticket_url=f"http://example.com/ticket/train/{entities.start_city}-{entities.end_city}"  # Добавлено
-            ))
-        
-        return ScheduleResponse(objects=schedule_objects) 
+        if schedule_response is None:
+            return MessageResponse(text="Не удалось получить данные о маршруте. Попробуйте уточнить ваш запрос.")
+
+        return schedule_response
