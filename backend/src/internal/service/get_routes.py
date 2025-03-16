@@ -46,15 +46,16 @@ def get_routes(points: List[str], date: str, prefered_transport: Optional[Dict[s
                 if "thread" not in route:
                     logger.error("Некорректная структура данных маршрута")
                     continue
-
                 transport_type = TransportType[route["thread"]["transport_type"]]
+                
+                ticket_url = route["thread"]["carrier"].get("url", "")
                 schedule_object = ScheduleObject(
                     type=transport_type,
                     time_start_utc=int(datetime.fromisoformat(route["departure"]).timestamp()),
                     time_end_utc=int(datetime.fromisoformat(route["arrival"]).timestamp()),
                     place_start=route["from"]["title"],
                     place_finish=route["to"]["title"],
-                    ticket_url="",  # Пропускаем ticket_url, если tickets_info отсутствует
+                    ticket_url=ticket_url,
                 )
                 schedule_objects.append(schedule_object)
 
@@ -79,15 +80,15 @@ def get_routes(points: List[str], date: str, prefered_transport: Optional[Dict[s
                     if "thread" not in route:
                         logger.error("Некорректная структура данных маршрута")
                         continue
-
                     transport_type = TransportType[route["thread"]["transport_type"]]
+                    ticket_url = route["thread"]["carrier"].get("url", "")
                     schedule_object = ScheduleObject(
                         type=transport_type,
                         time_start_utc=int(datetime.fromisoformat(route["departure"]).timestamp()),
                         time_end_utc=int(datetime.fromisoformat(route["arrival"]).timestamp()),
                         place_start=route["from"]["title"],
                         place_finish=route["to"]["title"],
-                        ticket_url="",  # Пропускаем ticket_url, если tickets_info отсутствует
+                        ticket_url=ticket_url,  
                     )
                     schedule_objects.append(schedule_object)
 
