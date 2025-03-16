@@ -19,22 +19,23 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 
 from internal.service.mistral_integration.message_handler import MessageHandler
 from internal.service.mistral_integration.entities import TravelEntities
+from internal.schemas.redis import RedisMessage
 
 
-class MockRedisMessage:
+class MockRedisMessage(RedisMessage):
     """
     Мок-класс для имитации Redis-сообщений.
-    Эмулирует структуру сообщения из Redis, содержащего сериализованные данные.
+    Эмулирует структуру сообщения из Redis, содержащего текстовое сообщение.
     """
     
-    def __init__(self, content: dict):
+    def __init__(self, text: str):
         """
-        Создает мок-сообщение из словаря с данными.
+        Создает мок-сообщение с текстом.
         
         Args:
-            content: Словарь с данными, который будет сериализован в JSON
+            text: Текст сообщения
         """
-        self.text = json.dumps(content)
+        self.text = text
 
 
 def print_colored(text, color='white'):
@@ -72,7 +73,7 @@ def run_test_dialog():
     На каждом шаге проверяется корректность работы MessageHandler:
     - Извлечение сущностей
     - Формирование ответов
-    - Накопление контекста
+    - Обработка всей истории диалога
     """
     print_colored("=== Автоматический тест MessageHandler ===", 'cyan')
     print_colored("Симуляция диалога с предопределенными сообщениями пользователя", 'cyan')
@@ -88,7 +89,9 @@ def run_test_dialog():
     
     # Инициализируем MessageHandler
     try:
-        handler = MessageHandler()
+        # Сначала сбрасываем синглтон, чтобы начать с чистого экземпляра
+        MessageHandler.reset_instance()
+        handler = MessageHandler.get_instance()
         print_colored("✓ MessageHandler инициализирован успешно", 'green')
     except Exception as e:
         print_colored(f"✗ Ошибка при инициализации MessageHandler: {e}", 'red')
@@ -97,18 +100,20 @@ def run_test_dialog():
     # История сообщений (имитация контекста диалога)
     message_history = []
     
-    # Сущности, извлеченные из сообщений
-    entities = TravelEntities()
-    
     # Выполняем тестовый диалог
-    for i, message in enumerate(test_messages):
+    for i, message_text in enumerate(test_messages):
         print_colored(f"\n--- Шаг {i+1}: Обработка сообщения ---", 'blue')
-        print_colored(f"Пользователь > {message}", 'white')
+        print_colored(f"Пользователь > {message_text}", 'white')
         
         # Обрабатываем сообщение
         try:
             print_colored("Обработка сообщения...", 'blue')
-            result = handler.process_message(message, message_history)
+            
+            # Добавляем новое сообщение в историю
+            message_history.append(MockRedisMessage(message_text))
+            
+            # Обрабатываем всю историю сообщений
+            result = handler.process_message(message_history)
             
             # Выводим результат обработки
             if hasattr(result, 'text'):
@@ -124,14 +129,8 @@ def run_test_dialog():
                     print_colored(f"     Отправление: {start_time}", 'green')
                     print_colored(f"     Прибытие: {end_time}", 'green')
             
-            # Извлекаем сущности из последнего ответа и обновляем накопленные данные
-            extractor = handler.entity_extractor
-            entities = extractor.extract_entities(message, entities)
-            
-            # Обновляем историю сообщений
-            message_history = [MockRedisMessage(entities.to_dict())]
-            
-            # Выводим текущее состояние сущностей
+            # Выводим текущие извлеченные сущности из истории (для отладки)
+            entities = handler._extract_entities_from_thread(message_history)
             print()
             print_colored("Текущие сущности:", 'magenta')
             for key, value in entities.to_dict().items():

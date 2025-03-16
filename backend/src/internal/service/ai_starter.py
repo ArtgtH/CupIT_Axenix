@@ -20,7 +20,7 @@ def talk_with_god(
 ) -> ScheduleResponse | MessageResponse:
     """
     Функция для общения с пользователем и извлечения сущностей о маршруте.
-    Использует Mistral AI API для извлечения сущностей из диалога.
+    Использует MessageHandler для обработки истории сообщений.
     
     Args:
         input_text: Текст запроса пользователя
@@ -30,8 +30,12 @@ def talk_with_god(
         ScheduleResponse, если все сущности извлечены
         MessageResponse, если требуется уточнение
     """
-    # Создаем обработчик сообщений
-    handler = MessageHandler()
+    # Создаем обработчик сообщений или получаем существующий экземпляр
+    handler = MessageHandler.get_instance()
     
-    # Обрабатываем сообщение и получаем ответ
-    return handler.process_message(input_text, thread)
+    # Добавляем текущий запрос пользователя к истории сообщений
+    current_message = RedisMessage(text=input_text)
+    full_thread = thread + [current_message]
+    
+    # Обрабатываем историю сообщений и получаем ответ
+    return handler.process_message(full_thread)

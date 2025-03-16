@@ -23,9 +23,32 @@ logger = logging.getLogger(__name__)
 class MessageHandler:
     """
     Класс для обработки сообщений пользователя и формирования ответов.
-    Отвечает за сохранение контекста, формирование ответов и принятие решений
-    о готовности извлеченных данных.
+    Отвечает за извлечение сущностей из истории сообщений и формирование ответов.
     """
+    
+    _instance = None
+    
+    @classmethod
+    def get_instance(cls, entity_extractor: Optional[EntityExtractor] = None):
+        """
+        Получает синглтон-экземпляр MessageHandler.
+        
+        Args:
+            entity_extractor: Экстрактор сущностей
+            
+        Returns:
+            Экземпляр MessageHandler
+        """
+        if cls._instance is None:
+            cls._instance = cls(entity_extractor)
+        return cls._instance
+    
+    @classmethod
+    def reset_instance(cls):
+        """
+        Сбрасывает синглтон-экземпляр MessageHandler.
+        """
+        cls._instance = None
     
     def __init__(self, entity_extractor: Optional[EntityExtractor] = None):
         """
@@ -36,62 +59,83 @@ class MessageHandler:
         """
         self.entity_extractor = entity_extractor or EntityExtractor()
     
-    def process_message(self, input_text: str, message_history: List[RedisMessage]) -> ScheduleResponse | MessageResponse:
+    def process_message(self, thread: List[RedisMessage]) -> ScheduleResponse | MessageResponse:
         """
-        Обрабатывает входящее сообщение от пользователя и формирует ответ.
+        Обрабатывает входящее сообщение и историю сообщений пользователя, формирует ответ.
         
         Args:
-            input_text: Текст сообщения пользователя
-            message_history: История сообщений
+            thread: История сообщений, включая текущее сообщение пользователя
             
         Returns:
             ScheduleResponse, если все сущности извлечены
             MessageResponse, если требуется дополнительная информация
         """
-        # Извлекаем текущие сущности из истории сообщений
-        current_entities = self._parse_message_history(message_history)
+        if not thread:
+            return MessageResponse(text="Пожалуйста, введите сообщение для обработки.")
         
-        # Извлекаем новые сущности из входного сообщения
-        updated_entities = self.entity_extractor.extract_entities(input_text, current_entities)
+        # Извлекаем текст текущего сообщения (последнее в списке)
+        current_message = self._get_message_text(thread[-1])
+        
+        # Извлекаем сущности из всей истории сообщений
+        entities = self._extract_entities_from_thread(thread)
         
         # Проверяем, все ли необходимые сущности извлечены
-        if updated_entities.is_complete():
+        if entities.is_complete():
             # Все сущности извлечены, можно возвращать расписание
-            return self._generate_schedule_response(updated_entities)
+            return self._generate_schedule_response(entities)
         else:
             # Требуется уточнение
-            response_text = self._generate_clarification_message(updated_entities)
+            response_text = self._generate_clarification_message(entities)
             return MessageResponse(text=response_text)
     
-    def _parse_message_history(self, messages: List[RedisMessage]) -> TravelEntities:
+    def _get_message_text(self, message: RedisMessage) -> str:
         """
-        Извлекает текущие сущности из истории сообщений.
+        Извлекает текст из сообщения.
         
         Args:
-            messages: История сообщений
+            message: Сообщение
+            
+        Returns:
+            Текст сообщения
+        """
+        try:
+            if isinstance(message, bytes):
+                message_dict = json.loads(message.decode('utf-8'))
+                return message_dict.get('text', '')
+            elif hasattr(message, 'text'):
+                # Пробуем проверить, является ли text JSON строкой
+                try:
+                    message_dict = json.loads(message.text)
+                    return message_dict.get('text', message.text)
+                except json.JSONDecodeError:
+                    # Если не JSON, возвращаем как есть
+                    return message.text
+            else:
+                # Если ничего не подходит, пробуем преобразовать к строке
+                return str(message)
+        except Exception as e:
+            logger.error(f"Ошибка при извлечении текста из сообщения: {e}")
+            return ""
+    
+    def _extract_entities_from_thread(self, thread: List[RedisMessage]) -> TravelEntities:
+        """
+        Извлекает сущности из всей истории сообщений.
+        
+        Args:
+            thread: История сообщений
             
         Returns:
             Извлеченные сущности
         """
-        if not messages:
-            return TravelEntities()
+        entities = TravelEntities()
         
-        try:
-            # Первое сообщение содержит текущее состояние сущностей
-            first_message = messages[0]
-            if isinstance(first_message, bytes):
-                entities_dict = json.loads(first_message.decode('utf-8'))
-                return TravelEntities(entities_dict)
-            elif hasattr(first_message, 'text'):
-                try:
-                    entities_dict = json.loads(first_message.text)
-                    return TravelEntities(entities_dict)
-                except (json.JSONDecodeError, AttributeError):
-                    pass
-        except (json.JSONDecodeError, IndexError, UnicodeDecodeError, AttributeError) as e:
-            logger.error(f"Ошибка при парсинге истории сообщений: {e}")
+        for message in thread:
+            message_text = self._get_message_text(message)
+            if message_text:
+                # Для каждого сообщения извлекаем сущности и обновляем результат
+                entities = self.entity_extractor.extract_entities(message_text, entities)
         
-        return TravelEntities()
+        return entities
     
     def _generate_clarification_message(self, entities: TravelEntities) -> str:
         """
@@ -183,12 +227,11 @@ class MessageHandler:
                 # Есть промежуточные города
                 stops = [entities.start_city] + entities.mid_city + [entities.end_city]
             else:
-                # Промежуточных городов нет, используем [None]
-                # Для find_multi_leg_route нужен список с городами отправления и прибытия
-                stops = [entities.start_city, None, entities.end_city]
+                # Промежуточных городов нет, используем простой список
+                stops = [entities.start_city, entities.end_city]
             
             try:
-                # Используем один и тот же метод для обоих случаев
+                # Используем маршрут с остановками
                 result = route_finder.find_multi_leg_route(stops, api_date_format)
                 
                 if result and 'route' in result:
@@ -198,105 +241,76 @@ class MessageHandler:
                         start_time = current_timestamp + (i * 7200)  # 2 часа между сегментами
                         end_time = start_time + segment.get('duration', 3600)
                         
-                        # Определяем тип транспорта на основе расстояния
-                        distance = segment.get('distance', 0)
-                        if distance > 1000:
-                            transport_type = TransportType.plane
-                        elif distance > 300:
-                            transport_type = TransportType.train
-                        else:
-                            transport_type = TransportType.bus
+                        schedule_objects.append(ScheduleObject(
+                            type=TransportType.bus if i % 2 == 0 else TransportType.train,
+                            place_start=segment.get('from', entities.start_city),
+                            place_finish=segment.get('to', entities.end_city),
+                            time_start_utc=start_time,
+                            time_end_utc=end_time
+                        ))
+                else:
+                    logger.warning(f"Не найдены маршруты для {stops} на {api_date_format}")
+                    # Падение в запасной вариант - ищем прямой маршрут
+                    direct_route = route_finder.find_best_route(entities.start_city, entities.end_city, api_date_format)
+                    
+                    if direct_route:
+                        # Создаем объект маршрута для прямого пути
+                        start_time = current_timestamp
+                        end_time = start_time + direct_route.get('duration', 3600)
                         
-                        schedule_objects.append(
-                            ScheduleObject(
-                                type=transport_type,
-                                time_start_utc=start_time,
-                                time_end_utc=end_time,
-                                place_start=segment.get('from', ""),
-                                place_finish=segment.get('to', ""),
-                                ticket_url=f"http://example.com/ticket/{transport_type}",
-                            )
-                        )
+                        schedule_objects.append(ScheduleObject(
+                            type=TransportType.bus,
+                            place_start=entities.start_city,
+                            place_finish=entities.end_city,
+                            time_start_utc=start_time,
+                            time_end_utc=end_time
+                        ))
             except Exception as e:
                 logger.error(f"Ошибка при поиске маршрута: {e}")
-                # Если не удалось найти маршрут через find_multi_leg_route, 
-                # пробуем найти прямой маршрут
+                # Падение в запасной вариант при любых ошибках API
                 try:
-                    segment = route_finder.find_best_route(entities.start_city, entities.end_city, api_date_format)
+                    direct_route = route_finder.find_best_route(entities.start_city, entities.end_city, api_date_format)
                     
-                    if segment:
-                        duration = segment.get('duration', 3600)
-                        distance = segment.get('distance', 0)
+                    if direct_route:
+                        # Создаем объект маршрута для прямого пути
+                        start_time = current_timestamp
+                        end_time = start_time + direct_route.get('duration', 3600)
                         
-                        # Определяем доступные типы транспорта на основе расстояния
-                        transport_types = []
-                        
-                        if distance > 1000:
-                            transport_types.append(TransportType.plane)
-                        
-                        if distance > 100:
-                            transport_types.append(TransportType.train)
-                        
-                        if distance < 800:
-                            transport_types.append(TransportType.bus)
-                        
-                        # Если не определили ни один тип транспорта, добавляем поезд и автобус по умолчанию
-                        if not transport_types:
-                            transport_types = [TransportType.train, TransportType.bus]
-                        
-                        # Создаем объекты расписания для каждого типа транспорта
-                        for i, transport_type in enumerate(transport_types):
-                            # Разное время начала для разных типов транспорта
-                            start_time = current_timestamp + (i * 3600)  # 1 час между отправлениями
-                            
-                            # Рассчитываем продолжительность в зависимости от типа транспорта
-                            if transport_type == TransportType.plane:
-                                duration_factor = 0.5  # Самолет быстрее
-                            elif transport_type == TransportType.train:
-                                duration_factor = 1.0  # Стандартная скорость
-                            else:
-                                duration_factor = 1.5  # Автобус медленнее
-                            
-                            adjusted_duration = int(duration * duration_factor)
-                            
-                            schedule_objects.append(
-                                ScheduleObject(
-                                    type=transport_type,
-                                    time_start_utc=start_time,
-                                    time_end_utc=start_time + adjusted_duration,
-                                    place_start=entities.start_city,
-                                    place_finish=entities.end_city,
-                                    ticket_url=f"http://example.com/ticket/{transport_type}",
-                                )
-                            )
-                except Exception as e:
-                    logger.error(f"Ошибка при поиске прямого маршрута: {e}")
-                    
+                        schedule_objects.append(ScheduleObject(
+                            type=TransportType.bus,
+                            place_start=entities.start_city,
+                            place_finish=entities.end_city,
+                            time_start_utc=start_time,
+                            time_end_utc=end_time
+                        ))
+                except Exception as inner_e:
+                    logger.error(f"Ошибка при поиске прямого маршрута: {inner_e}")
         except Exception as e:
-            logger.error(f"Общая ошибка при поиске маршрутов: {e}")
+            logger.error(f"Непредвиденная ошибка при формировании расписания: {e}")
         
-        # Если не нашли ни одного маршрута, используем заглушку
+        # Если не удалось получить ни одного маршрута, создаем заглушки
         if not schedule_objects:
             logger.warning(f"Не найдены маршруты для {entities.start_city} - {entities.end_city} на {api_date_format}")
             
-            # Заглушка для случая, когда маршруты не найдены
-            schedule_objects = [
-                ScheduleObject(
-                    type=TransportType.bus,
-                    time_start_utc=current_timestamp,
-                    time_end_utc=current_timestamp + 3600,
-                    place_start=entities.start_city,
-                    place_finish=entities.end_city,
-                    ticket_url="http://example.com/ticket/bus",
-                ),
-                ScheduleObject(
-                    type=TransportType.train,
-                    time_start_utc=current_timestamp + 1800,
-                    time_end_utc=current_timestamp + 5400,
-                    place_start=entities.start_city,
-                    place_finish=entities.end_city,
-                    ticket_url="http://example.com/ticket/train",
-                )
-            ]
+            # Создаем заглушки с расписанием
+            start_time = current_timestamp
+            
+            # Автобус
+            schedule_objects.append(ScheduleObject(
+                type=TransportType.bus,
+                place_start=entities.start_city,
+                place_finish=entities.end_city,
+                time_start_utc=start_time,
+                time_end_utc=start_time + 3600  # +1 час
+            ))
+            
+            # Поезд
+            schedule_objects.append(ScheduleObject(
+                type=TransportType.train,
+                place_start=entities.start_city,
+                place_finish=entities.end_city,
+                time_start_utc=start_time + 1800,  # +30 минут
+                time_end_utc=start_time + 5400  # +1.5 часа
+            ))
         
         return ScheduleResponse(objects=schedule_objects) 
