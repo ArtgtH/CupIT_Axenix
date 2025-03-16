@@ -1,10 +1,10 @@
 import logging
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from internal.schemas.responces import ScheduleResponse, ScheduleObject, TransportType
-from internal.service.Routes.GetRoutes import GetRoutes
-from internal.service.Routes.GetRoutesWithStops import GetRoutesWithStops
+from internal.service.routes.GetRoutes import GetRoutes
+from internal.service.routes.GetRoutesWithStops import GetRoutesWithStops
 
 
 logging.basicConfig(
@@ -14,12 +14,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_routes(points: List[str], date: str, prefered_transport: dict) -> Optional[ScheduleResponse]:
+def get_routes(points: List[str], date: str, prefered_transport: Optional[Dict[str, int]] = None) -> Optional[ScheduleResponse]:
     """
     Получает маршруты между точками и возвращает их в формате ScheduleResponse.
 
     :param points: Список городов (точек) для построения маршрута.
     :param date: Дата в формате 'YYYY-MM-DD'.
+    :param prefered_transport: Словарь с предпочтениями по транспорту (например, {"train": 1, "plane": 0, "bus": 0}).
     :return: Объект ScheduleResponse с маршрутами или None в случае ошибки.
     """
     if len(points) < 2:
@@ -31,7 +32,12 @@ def get_routes(points: List[str], date: str, prefered_transport: dict) -> Option
             # Используем GetRoutes для двух точек
             logger.info(f"Поиск маршрута между {points[0]} и {points[1]} на {date}")
             routes_api = GetRoutes()
-            routes_data = routes_api.get_aggregated_routes(points[0], points[1], date)
+
+            # Если все предпочтения равны 0, не передаем prefered_transport
+            if prefered_transport and all(value == 0 for value in prefered_transport.values()):
+                prefered_transport = None
+
+            routes_data = routes_api.get_aggregated_routes(points[0], points[1], date, prefered_transport=prefered_transport)
 
             if not routes_data:
                 logger.error("Не удалось получить данные маршрутов")
@@ -58,7 +64,12 @@ def get_routes(points: List[str], date: str, prefered_transport: dict) -> Option
             # Используем GetRoutesWithStops для более чем двух точек
             logger.info(f"Поиск многоэтапного маршрута через точки: {points} на {date}")
             routes_api = GetRoutesWithStops()
-            multi_leg_route = routes_api.find_multi_leg_route(points, date)
+
+            # Если все предпочтения равны 0, не передаем prefered_transport
+            if prefered_transport and all(value == 0 for value in prefered_transport.values()):
+                prefered_transport = None
+
+            multi_leg_route = routes_api.find_multi_leg_route(points, date, prefered_transport=prefered_transport)
 
             if not multi_leg_route:
                 logger.error("Не удалось получить данные многоэтапного маршрута")

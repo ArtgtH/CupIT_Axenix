@@ -15,7 +15,7 @@ class GetRoutesWithStops:
         self.routes_api = GetRoutes()
 
     def _find_best_routes(
-        self, start: str, end: str, date: str, top_n: int = 3
+        self, start: str, end: str, date: str, prefered_transport: Optional[Dict[str, int]] = None, top_n: int = 3
     ) -> Optional[List[Dict[str, Any]]]:
         """
         Находит несколько лучших маршрутов между двумя городами на указанную дату.
@@ -23,11 +23,17 @@ class GetRoutesWithStops:
         :param start: Город отправления.
         :param end: Город назначения.
         :param date: Дата в формате 'YYYY-MM-DD'.
+        :param prefered_transport: Словарь с предпочтениями по транспорту.
         :param top_n: Количество лучших маршрутов для возврата (по умолчанию 3).
         :return: Список топ-N маршрутов с наименьшей продолжительностью или None.
         """
         logging.info(f"Поиск маршрутов: {start} -> {end} на {date}")
-        routes_data = self.routes_api.get_routes(start, end, date)
+
+        # Если все значения в prefered_transport равны 0, не передаем его
+        if prefered_transport and all(value == 0 for value in prefered_transport.values()):
+            prefered_transport = None
+
+        routes_data = self.routes_api.get_routes(start, end, date, prefered_transport=prefered_transport)
 
         if not routes_data or "segments" not in routes_data:
             logging.warning(f"Маршруты не найдены: {start} -> {end} на {date}")
@@ -43,12 +49,13 @@ class GetRoutesWithStops:
         logging.info(f"Найдено {len(best_routes)} лучших маршрутов")
         return best_routes
 
-    def find_multi_leg_route(self, stops: List[str], date: str) -> Optional[Dict[str, Any]]:
+    def find_multi_leg_route(self, stops: List[str], date: str, prefered_transport: Optional[Dict[str, int]] = None) -> Optional[Dict[str, Any]]:
         """
         Находит маршрут с несколькими остановками.
 
         :param stops: Список городов (например, ["Москва", "Тверь", "Санкт-Петербург"]).
         :param date: Дата в формате 'YYYY-MM-DD'.
+        :param prefered_transport: Словарь с предпочтениями по транспорту.
         :return: Словарь с полным маршрутом, общей продолжительностью и расстоянием или None.
         """
         logging.info(f"Поиск маршрута с остановками: {stops} на {date}")
@@ -57,7 +64,7 @@ class GetRoutesWithStops:
         total_distance = 0
 
         for i in range(len(stops) - 1):
-            best_routes = self._find_best_routes(stops[i], stops[i + 1], date)
+            best_routes = self._find_best_routes(stops[i], stops[i + 1], date, prefered_transport)
             if not best_routes:
                 logging.error(f"Не удалось найти маршрут между {stops[i]} и {stops[i + 1]} на {date}")
                 return None
