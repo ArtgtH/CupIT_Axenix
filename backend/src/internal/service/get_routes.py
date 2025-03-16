@@ -1,3 +1,5 @@
+import sys
+sys.path.append(r'D:\repositories\CupIT_Axenix\backend\src')
 import logging
 from datetime import datetime
 from typing import List, Optional, Dict
@@ -48,13 +50,15 @@ def get_routes(points: List[str], date: str, prefered_transport: Optional[Dict[s
                     continue
 
                 transport_type = TransportType[route["thread"]["transport_type"]]
+                print(route)
+                ticket_url = route["thread"]["carrier"].get("url", "")
                 schedule_object = ScheduleObject(
                     type=transport_type,
                     time_start_utc=int(datetime.fromisoformat(route["departure"]).timestamp()),
                     time_end_utc=int(datetime.fromisoformat(route["arrival"]).timestamp()),
                     place_start=route["from"]["title"],
                     place_finish=route["to"]["title"],
-                    ticket_url="",  # Пропускаем ticket_url, если tickets_info отсутствует
+                    ticket_url=ticket_url,
                 )
                 schedule_objects.append(schedule_object)
 
@@ -79,15 +83,16 @@ def get_routes(points: List[str], date: str, prefered_transport: Optional[Dict[s
                     if "thread" not in route:
                         logger.error("Некорректная структура данных маршрута")
                         continue
-
+                    print(route)
                     transport_type = TransportType[route["thread"]["transport_type"]]
+                    ticket_url = route["thread"]["carrier"].get("url", "")
                     schedule_object = ScheduleObject(
                         type=transport_type,
                         time_start_utc=int(datetime.fromisoformat(route["departure"]).timestamp()),
                         time_end_utc=int(datetime.fromisoformat(route["arrival"]).timestamp()),
                         place_start=route["from"]["title"],
                         place_finish=route["to"]["title"],
-                        ticket_url="",  # Пропускаем ticket_url, если tickets_info отсутствует
+                        ticket_url=ticket_url,  
                     )
                     schedule_objects.append(schedule_object)
 
@@ -96,3 +101,17 @@ def get_routes(points: List[str], date: str, prefered_transport: Optional[Dict[s
     except Exception as e:
         logger.error(f"Ошибка при получении маршрутов: {e}")
         return None
+
+
+if __name__ == "__main__":
+    # Пример списка городов (точек) для построения маршрута
+    points = ["Москва", "Санкт-Петербург"]
+    
+    # Пример даты в формате 'YYYY-MM-DD'
+    date = "2025-10-15"
+    prefered_transport = {"train": 0, "plane": 0, "bus": 0}
+    # Вызов функции для получения маршрутов
+    schedule_response = get_routes(points, date)
+    
+    # Просто выводим объект с помощью print
+    print(schedule_response)
