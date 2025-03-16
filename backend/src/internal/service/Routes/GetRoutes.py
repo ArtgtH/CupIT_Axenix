@@ -127,7 +127,7 @@ class GetRoutes:
 
         return fastest_routes[:num_routes]
 
-    def get_aggregated_routes(self, from_city: str, to_city: str, date: str, num_routes: int = 12, prefered_transport: Optional[Dict[str, int]] = None) -> List[Dict[str, Any]]:
+    def get_aggregated_routes(self, from_city: str, to_city: str, date: str, num_routes: int = 4, prefered_transport: Optional[Dict[str, int]] = None) -> List[Dict[str, Any]]:
         """
         Получает и агрегирует маршруты, возвращая заданное количество самых быстрых.
 
@@ -150,5 +150,5 @@ if __name__ == "__main__":
     to_city = "Москва"
     date = "2025-09-02"
 
-    fastest_routes = yandex_schedule.get_aggregated_routes(from_city, to_city, date, num_routes=12)
+    fastest_routes = yandex_schedule.get_aggregated_routes(from_city, to_city, date, num_routes=4)
     print(json.dumps(fastest_routes, indent=4, ensure_ascii=False))
