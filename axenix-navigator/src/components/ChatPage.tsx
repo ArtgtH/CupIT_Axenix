@@ -12,18 +12,9 @@ const ChatPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [userId] = useState<string>(() => {
-    // Пытаемся получить существующий userId из localStorage
-    const savedUserId = localStorage.getItem('axenix_user_id');
-    if (savedUserId) {
-      return savedUserId;
-    }
-    
-    // Если нет, создаем новый и сохраняем
-    const newUserId = uuidv4();
-    localStorage.setItem('axenix_user_id', newUserId);
-    return newUserId;
-  });
+  
+  // Генерируем новый UUID при каждой загрузке компонента
+  const [sessionId] = useState<string>(() => uuidv4());
 
   const handleNavigateHome = () => {
     document.body.style.opacity = '0';
@@ -54,7 +45,7 @@ const ChatPage: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: userId,
+          id: sessionId,
           text: message
         })
       });
