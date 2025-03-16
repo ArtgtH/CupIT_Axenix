@@ -14,7 +14,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_routes(points: List[str], date: str) -> Optional[ScheduleResponse]:
+def get_routes(points: List[str], date: str, prefered_transport: dict) -> Optional[ScheduleResponse]:
     """
     Получает маршруты между точками и возвращает их в формате ScheduleResponse.
 

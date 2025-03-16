@@ -12,16 +12,7 @@ from threading import Lock
 import requests
 from requests.exceptions import RequestException
 
-# Импортируем официальный SDK Mistral
-try:
-    from mistralai import Mistral
-    from mistralai.exceptions import MistralException
-    MISTRAL_SDK_AVAILABLE = True
-except ImportError:
-    MISTRAL_SDK_AVAILABLE = False
-    logger = logging.getLogger(__name__)
-    logger.warning("Официальный SDK Mistral не найден. Используйте: pip install mistralai")
-
+from mistralai import Mistral
 from .config import settings
 
 
@@ -113,7 +104,7 @@ class MistralAIClient:
         
         # Создаем клиент SDK если доступен
         self.client = None
-        if MISTRAL_SDK_AVAILABLE and self.api_key:
+        if self.api_key:
             try:
                 self.client = Mistral(api_key=self.api_key)
                 logger.info(f"Клиент Mistral SDK успешно инициализирован с моделью: {self.model_name}")
@@ -165,7 +156,7 @@ class MistralAIClient:
                     
                     extracted_data = json.loads(content)
                     return extracted_data
-                except MistralException as e:
+                except Exception as e:
                     if "429" in str(e):
                         # Обработка превышения лимита запросов
                         retry_after = settings.THROTTLE_TIME
@@ -246,47 +237,47 @@ class MistralAIClient:
         except Exception as e:
             logger.error(f"Непредвиденная ошибка при обращении к Mistral AI API: {e}")
             raise APIError(f"Непредвиденная ошибка при работе с Mistral AI: {e}")
-    
+
     def _build_extraction_prompt(self, message: str, context: Dict[str, Any]) -> str:
         """
         Формирует промпт для извлечения сущностей.
-        
-        Args:
-            message: Текст сообщения пользователя
-            context: Текущие извлеченные сущности
-            
-        Returns:
-            Текст промпта для модели
         """
-        # Здесь мы предполагаем, что message содержит весь диалог
-        # и что он уже отформатирован с указанием ролей
         return f"""
         # Задача
-        Ты - система извлечения информации из сообщений пользователя. Твоя задача - извлечь следующие сущности из текста пользователя:
-        
-        - date: Дата в формате dd.mm.yyyy - сейчас 2025 год, используй это знание если в тексте нет указания на другой год
-        - start_city: Город отправления на русском языке
-        - end_city: Город прибытия на русском языке
-        - mid_city: Список промежуточных городов на русском языке (может быть пустым)
-        
+        Ты - система извлечения информации из сообщений пользователя. Извлеки следующие сущности:
+
+        - date: Дата в формате dd.mm.yyyy (текущий год 2025, если не указан)
+        - start_city: Город отправления на русском
+        - end_city: Город прибытия на русском
+        - mid_city: Список промежуточных городов
+        - prefered_transport: Предпочтения транспорта (1 - выбран, 0 - не выбран)
+            - train: поезд
+            - plane: самолет
+            - bus: автобус
+
         # Текущие данные
-        Текущие извлеченные сущности:
+        Текущие сущности:
         {json.dumps(context, ensure_ascii=False, indent=2)}
-        
-        # Диалог пользователя с системой:
+
+        # Сообщение пользователя:
         {message}
-        
-        # Инструкции
-        1. Проанализируй текст и выдели упомянутые сущности
-        2. Возьми из текста только четко указанные данные
-        3. Если сущность уже есть в текущих данных и не упоминается в новом сообщении, сохрани существующее значение
-        4. Верни ТОЛЬКО JSON-объект без пояснений. Формат:
+
+        # Правила
+        1. Обнови ТОЛЬКО явно упомянутые в сообщении сущности
+        2. Для транспорта: 1 если пользователь выбрал, 0 если явно отказался
+        3. Если транспорт не упомянут - оставь текущие значения
+        4. Для даты учитывай контекст текущего года
+
+        # Формат ответа (ТОЛЬКО JSON):
         {{
           "date": "дд.мм.гггг",
-          "start_city": "город отправления",
-          "end_city": "город прибытия",
-          "mid_city": ["промежуточный город 1", "промежуточный город 2"]
+          "start_city": "город",
+          "end_city": "город",
+          "mid_city": ["город1", "город2"],
+          "prefered_transport": {{
+            "train": 1,
+            "plane": 0,
+            "bus": 0
+          }}
         }}
-        
-        Если сущность не найдена и нет в текущих данных, оставь пустую строку или пустой массив для mid_city.
-        """ 
+        """
