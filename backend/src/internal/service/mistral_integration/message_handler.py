@@ -168,37 +168,53 @@ class MessageHandler:
         if "end_city" in missing:
             message_parts.append("город прибытия")
         
+        # Добавляем уточнение по предпочитаемому транспорту, если он не указан
+        if not any(entities.prefered_transport.values()):
+            message_parts.append("предпочитаемый транспорт (поезд, самолет, автобус)")
+
         message = "Пожалуйста, укажите " + ", ".join(message_parts) + "."
-        
+
         # Если что-то уже извлечено, добавим это в сообщение
         known_parts = []
-        
+
         if entities.date:
             known_parts.append(f"дата: {entities.date}")
-        
+
         if entities.start_city:
             known_parts.append(f"откуда: {entities.start_city}")
-        
+
         if entities.end_city:
             known_parts.append(f"куда: {entities.end_city}")
-        
+
         if entities.mid_city:
             mid_cities = ", ".join(entities.mid_city)
             known_parts.append(f"через: {mid_cities}")
-        
+
+        # Добавляем информацию о предпочитаемом транспорте, если она есть
+        if any(entities.prefered_transport.values()):
+            transport_preferences = []
+            if entities.prefered_transport["train"]:
+                transport_preferences.append("поезд")
+            if entities.prefered_transport["plane"]:
+                transport_preferences.append("самолет")
+            if entities.prefered_transport["bus"]:
+                transport_preferences.append("автобус")
+            if transport_preferences:
+                known_parts.append(f"предпочитаемый транспорт: {', '.join(transport_preferences)}")
+
         if known_parts:
             message += f"\n\nУже указано: {'; '.join(known_parts)}."
-        
+
         return message
-    
+
     def _generate_schedule_response(self, entities: TravelEntities) -> ScheduleResponse:
         """
         Формирует ответ с расписанием на основе извлеченных сущностей.
         Использует API маршрутов для получения реальных данных.
-        
+
         Args:
             entities: Извлеченные сущности
-            
+
         Returns:
             Ответ с расписанием
         """
@@ -215,8 +231,9 @@ class MessageHandler:
             stops = [entities.start_city] + entities.mid_city + [entities.end_city]
         else:
             stops = [entities.start_city, entities.end_city]
-        
-        schedule_response = get_routes(stops, api_date_format)
+
+        # Получаем маршруты с учетом предпочитаемого транспорта
+        schedule_response = get_routes(stops, api_date_format, entities.prefered_transport)
         
         if schedule_response is None:
             return MessageResponse(text="Не удалось получить данные о маршруте. Попробуйте уточнить ваш запрос.")

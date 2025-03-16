@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import os
 
-from internal.schemas.redis import RedisMessage
+from internal.schemas.redis import RedisMessage, Role
 from internal.schemas.responces import (
     ScheduleResponse,
     ScheduleObject,
@@ -32,7 +32,7 @@ def talk_with_god(
     """
     handler = MessageHandler.get_instance()
     
-    current_message = RedisMessage(text=input_text)
+    current_message = RedisMessage(role=Role.user, text=input_text)
     full_thread = thread + [current_message]
     
     return handler.process_message(full_thread)
