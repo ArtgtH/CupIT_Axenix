@@ -41,7 +41,7 @@ class GetRoutes:
             logging.error(f"Ошибка при запросе к API: {e}")
         return None
 
-    def get_routes(self, from_city: str, to_city: str, date: str, lang: str = "ru_RU", page: int = 1) -> Optional[Dict[str, Any]]:
+    def get_routes(self, from_city: str, to_city: str, date: str, lang: str = "ru_RU", page: int = 1, prefered_transport: Optional[Dict[str, int]] = None) -> Optional[Dict[str, Any]]:
         """
         Получает список маршрутов между городами на указанную дату.
 
@@ -50,6 +50,7 @@ class GetRoutes:
         :param date: Дата в формате 'YYYY-MM-DD'.
         :param lang: Язык ответа (по умолчанию 'ru_RU').
         :param page: Номер страницы результатов (по умолчанию 1).
+        :param prefered_transport: Словарь с предпочтениями по транспорту (например, {"train": 1, "plane": 0, "bus": 0}).
         :return: JSON-ответ с маршрутами или None в случае ошибки.
         """
         from_code = self._get_station_code(from_city, lang)
@@ -64,10 +65,36 @@ class GetRoutes:
         try:
             response = requests.get(url, params=params, timeout=20)
             response.raise_for_status()
-            return response.json()
+            routes_data = response.json()
+
+            # Если все значения в prefered_transport равны 0, не фильтруем маршруты
+            if prefered_transport and not all(value == 0 for value in prefered_transport.values()):
+                routes_data = self._filter_routes_by_prefered_transport(routes_data, prefered_transport)
+
+            return routes_data
         except requests.exceptions.RequestException as e:
             logging.error(f"Ошибка при запросе к API: {e}")
             return None
+
+    def _filter_routes_by_prefered_transport(self, routes_data: Dict[str, Any], prefered_transport: Dict[str, int]) -> Dict[str, Any]:
+        """
+        Фильтрует маршруты по предпочтительным видам транспорта.
+
+        :param routes_data: JSON-данные с маршрутами.
+        :param prefered_transport: Словарь с предпочтениями по транспорту.
+        :return: Отфильтрованные данные маршрутов.
+        """
+        if not routes_data or "segments" not in routes_data:
+            return routes_data
+
+        filtered_segments = []
+        for segment in routes_data["segments"]:
+            transport_type = segment.get("thread", {}).get("transport_type")
+            if transport_type in prefered_transport and prefered_transport[transport_type] == 1:
+                filtered_segments.append(segment)
+
+        routes_data["segments"] = filtered_segments
+        return routes_data
 
     def _get_fastest_routes(self, routes_data: Dict[str, Any], num_routes: int = 6) -> List[Dict[str, Any]]:
         """
@@ -100,7 +127,7 @@ class GetRoutes:
 
         return fastest_routes[:num_routes]
 
-    def get_aggregated_routes(self, from_city: str, to_city: str, date: str, num_routes: int = 12) -> List[Dict[str, Any]]:
+    def get_aggregated_routes(self, from_city: str, to_city: str, date: str, num_routes: int = 12, prefered_transport: Optional[Dict[str, int]] = None) -> List[Dict[str, Any]]:
         """
         Получает и агрегирует маршруты, возвращая заданное количество самых быстрых.
 
@@ -108,9 +135,10 @@ class GetRoutes:
         :param to_city: Название города назначения.
         :param date: Дата в формате 'YYYY-MM-DD'.
         :param num_routes: Количество маршрутов, которое нужно вернуть (по умолчанию 6).
+        :param prefered_transport: Словарь с предпочтениями по транспорту.
         :return: Список агрегированных маршрутов.
         """
-        routes_data = self.get_routes(from_city, to_city, date)
+        routes_data = self.get_routes(from_city, to_city, date, prefered_transport=prefered_transport)
         if routes_data:
             return self._get_fastest_routes(routes_data, num_routes)
         return []
