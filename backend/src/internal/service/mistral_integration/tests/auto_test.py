@@ -19,23 +19,21 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 
 from internal.service.mistral_integration.message_handler import MessageHandler
 from internal.service.mistral_integration.entities import TravelEntities
-from internal.schemas.redis import RedisMessage
+from internal.schemas.redis import RedisMessage, Role
 
 
-class MockRedisMessage(RedisMessage):
+# Вместо наследования, создаём функцию для создания RedisMessage
+def create_user_message(text: str) -> RedisMessage:
     """
-    Мок-класс для имитации Redis-сообщений.
-    Эмулирует структуру сообщения из Redis, содержащего текстовое сообщение.
-    """
+    Создает сообщение пользователя для тестирования.
     
-    def __init__(self, text: str):
-        """
-        Создает мок-сообщение с текстом.
+    Args:
+        text: Текст сообщения
         
-        Args:
-            text: Текст сообщения
-        """
-        self.text = text
+    Returns:
+        Экземпляр RedisMessage с ролью user
+    """
+    return RedisMessage(role=Role.user, text=text)
 
 
 def print_colored(text, color='white'):
@@ -110,7 +108,7 @@ def run_test_dialog():
             print_colored("Обработка сообщения...", 'blue')
             
             # Добавляем новое сообщение в историю
-            message_history.append(MockRedisMessage(message_text))
+            message_history.append(create_user_message(message_text))
             
             # Обрабатываем всю историю сообщений
             result = handler.process_message(message_history)

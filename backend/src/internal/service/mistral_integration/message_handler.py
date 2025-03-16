@@ -129,11 +129,11 @@ class MessageHandler:
         """
         entities = TravelEntities()
         
-        for message in thread:
-            message_text = self._get_message_text(message)
-            if message_text:
-                # Для каждого сообщения извлекаем сущности и обновляем результат
-                entities = self.entity_extractor.extract_entities(message_text, entities)
+        # Объединяем текст всех сообщений в один
+        full_dialogue = " ".join(self._get_message_text(message) for message in thread if self._get_message_text(message))
+        
+        # Извлекаем сущности из полного текста диалога
+        entities = self.entity_extractor.extract_entities(full_dialogue, entities)
         
         return entities
     
