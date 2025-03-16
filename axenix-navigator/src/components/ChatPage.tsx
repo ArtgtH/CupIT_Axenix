@@ -5,7 +5,7 @@ import { ChatMessage, ApiResponse } from '../types/chat';
 const ChatPage: React.FC = () => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { text: 'Откуда вы отправляетесь?', isBot: true }
+    { text: 'Я — Саша, ваш умный помощник в планировании поездки. \n\nПожалуйста, напишите мне, откуда, куда и когда вы планируете отправиться, даже можете указать сложный маршрут из нескольких городов, и я смогу вам помочь с выбором транспорта, маршрута и покупкой билетов!\n\nУчти, что ты можешь выбрать свои приоритеты из 3-х видов транспорта: автобуса, самолета и поезда', isBot: true }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -186,7 +186,7 @@ const ChatPage: React.FC = () => {
                   <div className={`rounded-xl px-4 py-3 ${
                     message.isBot ? 'bg-[#f5f1f0] text-secondary' : 'bg-primary text-white'
                   }`}>
-                    <p className="text-base break-words">{message.text}</p>
+                    <p className="text-base break-words whitespace-pre-wrap">{message.text}</p>
                   </div>
                   {message.schedule && (
                     <div className="w-full space-y-2 mt-2">
