@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Dict
 
 from internal.schemas.responces import ScheduleResponse, ScheduleObject, TransportType
-
+from internal.service.Routes import GetRoutesWithStops, GetRoutes
 
 logging.basicConfig(
     level=logging.INFO,
