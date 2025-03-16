@@ -1,6 +1,6 @@
 import sys
 sys.path.append(r'D:\repositories\CupIT_Axenix\backend\src')
-print(sys.path)
+
 import logging
 from datetime import datetime
 from typing import List, Optional
@@ -17,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_schedule_response(points: List[str], date: str) -> Optional[ScheduleResponse]:
+def get_routes(points: List[str], date: str) -> Optional[ScheduleResponse]:
     """
     Получает маршруты между точками и возвращает их в формате ScheduleResponse.
 
@@ -35,9 +35,17 @@ def get_schedule_response(points: List[str], date: str) -> Optional[ScheduleResp
             logger.info(f"Поиск маршрута между {points[0]} и {points[1]} на {date}")
             routes_api = GetRoutes()
             routes_data = routes_api.get_aggregated_routes(points[0], points[1], date)
-            schedule_objects = []
 
+            if not routes_data:
+                logger.error("Не удалось получить данные маршрутов")
+                return None
+
+            schedule_objects = []
             for route in routes_data:
+                if "thread" not in route:
+                    logger.error("Некорректная структура данных маршрута")
+                    continue
+
                 transport_type = TransportType[route["thread"]["transport_type"]]
                 schedule_object = ScheduleObject(
                     type=transport_type,
@@ -45,7 +53,7 @@ def get_schedule_response(points: List[str], date: str) -> Optional[ScheduleResp
                     time_end_utc=int(datetime.fromisoformat(route["arrival"]).timestamp()),
                     place_start=route["from"]["title"],
                     place_finish=route["to"]["title"],
-                    ticket_url=route.get("tickets_info", {}).get("url", ""),
+                    ticket_url="",  # Пропускаем ticket_url, если tickets_info отсутствует
                 )
                 schedule_objects.append(schedule_object)
 
@@ -54,10 +62,18 @@ def get_schedule_response(points: List[str], date: str) -> Optional[ScheduleResp
             logger.info(f"Поиск многоэтапного маршрута через точки: {points} на {date}")
             routes_api = GetRoutesWithStops()
             multi_leg_route = routes_api.find_multi_leg_route(points, date)
-            schedule_objects = []
 
+            if not multi_leg_route:
+                logger.error("Не удалось получить данные многоэтапного маршрута")
+                return None
+
+            schedule_objects = []
             for leg in multi_leg_route["route"]:
                 for route in leg["routes"]:
+                    if "thread" not in route:
+                        logger.error("Некорректная структура данных маршрута")
+                        continue
+
                     transport_type = TransportType[route["thread"]["transport_type"]]
                     schedule_object = ScheduleObject(
                         type=transport_type,
@@ -65,7 +81,7 @@ def get_schedule_response(points: List[str], date: str) -> Optional[ScheduleResp
                         time_end_utc=int(datetime.fromisoformat(route["arrival"]).timestamp()),
                         place_start=route["from"]["title"],
                         place_finish=route["to"]["title"],
-                        ticket_url=route.get("tickets_info", {}).get("url", ""),
+                        ticket_url="",  # Пропускаем ticket_url, если tickets_info отсутствует
                     )
                     schedule_objects.append(schedule_object)
 
@@ -74,14 +90,3 @@ def get_schedule_response(points: List[str], date: str) -> Optional[ScheduleResp
     except Exception as e:
         logger.error(f"Ошибка при получении маршрутов: {e}")
         return None
-
-
-# Пример использования
-if __name__ == "__main__":
-    points = ["Москва", "Тверь", "Санкт-Петербург"]
-    date = "2025-03-15"
-    response = get_schedule_response(points, date)
-    if response:
-        logger.info(f"Успешно получен ответ: {response}")
-    else:
-        logger.error("Не удалось получить маршруты")

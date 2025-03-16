@@ -1,7 +1,7 @@
 import logging
 from typing import Optional, List, Dict, Any
 
-from GetRoutes import GetRoutes
+from .GetRoutes import GetRoutes
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -84,4 +84,3 @@ if __name__ == "__main__":
     stops_list = ["Москва", "Тверь", "Санкт-Петербург"]
     travel_date = "2025-03-15"
     result = route_finder.find_multi_leg_route(stops_list, travel_date)
-    print(result)
