@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChatMessage, ApiResponse } from '../types/chat';
+// @ts-ignore
+import { v4 as uuidv4 } from 'uuid';
 
 const ChatPage: React.FC = () => {
   const navigate = useNavigate();
@@ -10,6 +12,18 @@ const ChatPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [userId] = useState<string>(() => {
+    // Пытаемся получить существующий userId из localStorage
+    const savedUserId = localStorage.getItem('axenix_user_id');
+    if (savedUserId) {
+      return savedUserId;
+    }
+    
+    // Если нет, создаем новый и сохраняем
+    const newUserId = uuidv4();
+    localStorage.setItem('axenix_user_id', newUserId);
+    return newUserId;
+  });
 
   const handleNavigateHome = () => {
     document.body.style.opacity = '0';
@@ -31,72 +45,35 @@ const ChatPage: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Мок функции для работы с бэкендом
-  const mockApiCall = async (message: string): Promise<ApiResponse> => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Пример ответа с расписанием
-    if (message.toLowerCase().includes('санкт-петербург') && message.toLowerCase().includes('москва')) {
+  // Функция для работы с API
+  const callApi = async (message: string): Promise<ApiResponse> => {
+    try {
+      const response = await fetch('https://axenix.space/api/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          text: message
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as ApiResponse;
+    } catch (error) {
+      console.error('API call failed:', error);
+      
+      // В случае ошибки возвращаем сообщение об ошибке
       return {
-        type: 'schedule',
-        objects: [
-          {
-            type: 'train',
-            time_start_utc: Math.floor(Date.now() / 1000) + 86400, // завтра
-            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200, // +2 часа
-            place_start: 'Санкт-Петербург',
-            place_finish: 'Тверь',
-            ticket_url: 'https://example.com/ticket1'
-          },
-          {
-            type: 'bus',
-            time_start_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 1800, // +30 минут после поезда
-            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 1800 + 3600, // +1 час
-            place_start: 'Тверь',
-            place_finish: 'Москва',
-            ticket_url: 'https://example.com/ticket2'
-          }
-        ]
+        type: 'message',
+        text: 'Извините, произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.'
       };
     }
-    
-    // Пример ответа с расписанием для других городов
-    if (message.toLowerCase().includes('москва') && message.toLowerCase().includes('сочи')) {
-      return {
-        type: 'schedule',
-        objects: [
-          {
-            type: 'plane',
-            time_start_utc: Math.floor(Date.now() / 1000) + 86400,
-            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200,
-            place_start: 'Москва',
-            place_finish: 'Ростов-на-Дону',
-            ticket_url: 'https://example.com/ticket3'
-          },
-          {
-            type: 'bus',
-            time_start_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 3600,
-            time_end_utc: Math.floor(Date.now() / 1000) + 86400 + 7200 + 3600 + 7200,
-            place_start: 'Ростов-на-Дону',
-            place_finish: 'Сочи',
-            ticket_url: 'https://example.com/ticket4'
-          }
-        ]
-      };
-    }
-    
-    // Пример текстового ответа
-    const responses = [
-      'Отличный выбор! Куда бы вы хотели отправиться?',
-      'Какие даты поездки вы рассматриваете?',
-      'Какой бюджет на поездку вы планируете?',
-      'Предпочитаете активный отдых или спокойное времяпрепровождение?'
-    ];
-    
-    return {
-      type: 'message',
-      text: responses[Math.floor(Math.random() * responses.length)]
-    };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,7 +86,7 @@ const ChatPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await mockApiCall(inputValue);
+      const response = await callApi(inputValue);
       if (response.type === 'message') {
         setMessages(prev => [...prev, { text: response.text, isBot: true }]);
       } else if (response.type === 'schedule') {
@@ -121,16 +98,39 @@ const ChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error getting response:', error);
+      setMessages(prev => [...prev, { 
+        text: 'Извините, произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже.', 
+        isBot: true 
+      }]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const formatTime = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleTimeString('ru-RU', {
+    const date = new Date(timestamp * 1000);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    let dateStr = '';
+    if (date.toDateString() === today.toDateString()) {
+      dateStr = 'Сегодня';
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+      dateStr = 'Завтра';
+    } else {
+      dateStr = date.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long'
+      });
+    }
+
+    const timeStr = date.toLocaleTimeString('ru-RU', {
       hour: '2-digit',
       minute: '2-digit'
     });
+
+    return `${dateStr}, ${timeStr}`;
   };
 
   const getTransportIcon = (type: string) => {
